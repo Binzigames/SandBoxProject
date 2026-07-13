@@ -17,7 +17,11 @@ def exit():
 # root
 
 def init_root():
-    pass
+    pr.init_window( 900 , 800 , "SandBoxProject")
+    while not pr.window_should_close():
+        root()
+    else:
+        exit()
 
 def root():
     physics()
