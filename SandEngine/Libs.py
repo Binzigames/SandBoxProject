@@ -1,0 +1,11 @@
+# Libs loader for you and your family
+# MAIN HERO LIB (My true beloved)
+import pyray as pr
+
+# ADDITIONALS
+import colorama as c
+
+# IN-BUILT PYTHON LIBS
+import sys , os
+import math
+import random
