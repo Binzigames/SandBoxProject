@@ -140,8 +140,9 @@ def get_wheel_rotation():
     return TMP_cursor_scale
 #its "UI" my honey
 Welcome_screen_shown = False
+debug_menu = False
 def draw_ui():
-    global Welcome_screen_shown
+    global Welcome_screen_shown , debug_menu
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
 
@@ -157,6 +158,159 @@ def draw_ui():
         pr.draw_text("RMB - DELETE SOMETHING / 1-4 CHOSE MATERIAL (DownMenu)/ F11 - Fullscreen", 20,  40, 20,pr.DARKGRAY)
         if pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_LEFT):
             Welcome_screen_shown = True
+    elif debug_menu:
+
+        panel_width = 320
+        panel_height = 220
+
+        panel = pr.Rectangle(
+            pr.get_screen_width() - panel_width - 20,
+            30,
+            panel_width,
+            panel_height
+        )
+
+
+        pr.draw_rectangle_rounded(
+            pr.Rectangle(
+                panel.x + 6,
+                panel.y + 6,
+                panel.width,
+                panel.height
+            ),
+            0.15,
+            12,
+            pr.Color(0, 0, 0, 120)
+        )
+
+
+        pr.draw_rectangle_rounded(
+            panel,
+            0.15,
+            12,
+            pr.Color(20, 22, 30, 230)
+        )
+
+
+        pr.draw_rectangle_rounded_lines(
+            panel,
+            0.15,
+            12,
+            pr.Color(100, 100, 120, 255)
+        )
+
+        pr.draw_text(
+            "DEBUG PANEL",
+            int(panel.x + 20),
+            int(panel.y + 15),
+            24,
+            pr.GREEN
+        )
+
+        pr.draw_line(
+            int(panel.x + 15),
+            int(panel.y + 50),
+            int(panel.x + panel.width - 15),
+            int(panel.y + 50),
+            pr.Color(80, 80, 100, 255)
+        )
+
+        mouse = pr.get_mouse_position()
+
+        debug_info = [
+            f"FPS: {pr.get_fps()}",
+            f"Mouse X: {int(mouse.x)}",
+            f"Mouse Y: {int(mouse.y)}",
+        ]
+
+        y = panel.y + 65
+
+        for text in debug_info:
+            pr.draw_text(
+                text,
+                int(panel.x + 20),
+                int(y),
+                18,
+                pr.LIGHTGRAY
+            )
+            y += 24
+        pr.draw_circle(
+            int(panel.x + panel.width - 30),
+            int(panel.y + 28),
+            8,
+            pr.GREEN
+        )
+    else:
+        pr.draw_text(
+            "Created by porko_dev",
+            20,
+            20,
+            18,
+            pr.Color(180, 180, 180, 190)
+        )
+
+        # Верхня інформаційна панель
+        panel_width = 300
+        panel_height = 70
+
+        panel = pr.Rectangle(
+            pr.get_screen_width() - panel_width - 20,
+            25,
+            panel_width,
+            panel_height
+        )
+
+        pr.draw_rectangle_rounded(
+            pr.Rectangle(
+                panel.x + 5,
+                panel.y + 5,
+                panel.width,
+                panel.height
+            ),
+            0.15,
+            10,
+            pr.Color(0, 0, 0, 90)
+        )
+
+        pr.draw_rectangle_rounded(
+            panel,
+            0.15,
+            10,
+            pr.Color(30, 30, 40, 200)
+        )
+
+        pr.draw_rectangle_rounded_lines(
+            panel,
+            0.15,
+            10,
+            pr.Color(100, 100, 110, 255)
+        )
+
+        pr.draw_text(
+            "SIMULATED BOX",
+            int(panel.x + 20),
+            int(panel.y + 12),
+            22,
+            pr.WHITE
+        )
+
+        pr.draw_text(
+            "RUNNING",
+            int(panel.x + 20),
+            int(panel.y + 42),
+            16,
+            pr.GREEN
+        )
+
+        pr.draw_circle(
+            int(panel.x + panel.width - 30),
+            int(panel.y + 35),
+            8,
+            pr.GREEN
+        )
+
+    if pr.is_key_pressed(pr.KeyboardKey.KEY_TAB):
+        debug_menu = not debug_menu
 
 # drawer function
 def visuals_root():
