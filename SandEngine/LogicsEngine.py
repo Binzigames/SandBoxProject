@@ -6,9 +6,9 @@ from SandEngine.Visuals.VisualEngine import *
 from SandEngine.Debuger import *
 
 Curent_material = 2
-
+Fullscreen = False
 def handle_controls():
-    global Curent_material
+    global Curent_material , Fullscreen
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
 
@@ -40,6 +40,15 @@ def handle_controls():
         Curent_material = 3
     if pr.is_key_pressed(pr.KeyboardKey.KEY_THREE):
         Curent_material = 4
+    if pr.is_key_pressed(pr.KeyboardKey.KEY_F11):
+        Fullscreen = not Fullscreen
+
+        if Fullscreen:
+            pr.toggle_fullscreen()
+        else:
+            pr.toggle_fullscreen()
+            pr.set_window_size(800, 900)
+
 
 def handle_ui_buttons():
     global Curent_material

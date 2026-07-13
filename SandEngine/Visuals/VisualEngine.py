@@ -139,7 +139,9 @@ def get_wheel_rotation():
 
     return TMP_cursor_scale
 #its "UI" my honey
+Welcome_screen_shown = False
 def draw_ui():
+    global Welcome_screen_shown
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
 
@@ -149,7 +151,12 @@ def draw_ui():
         get_wheel_rotation() * 5,
         pr.RAYWHITE
     )
-
+    if not  Welcome_screen_shown:
+        pr.draw_text("SIMULATED BOX NEAR ME..." , 20 , pr.get_screen_height() // 2 , 50 ,pr.GRAY)
+        pr.draw_text("DEVELOPED BY PORKO_DEV / PRESS LMB TO CREATE SOMETHING", 20 , pr.get_screen_height() // 2 + 60, 20, pr.DARKGRAY)
+        pr.draw_text("RMB - DELETE SOMETHING / 1-4 CHOSE MATERIAL (DownMenu)/ F11 - Fullscreen", 20,  40, 20,pr.DARKGRAY)
+        if pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_LEFT):
+            Welcome_screen_shown = True
 
 # drawer function
 def visuals_root():
