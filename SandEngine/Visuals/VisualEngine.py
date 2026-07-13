@@ -2,6 +2,7 @@
 #importing for you honey ~
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
+from SandEngine.Debuger import *
 
 #camera
 camera = pr.Camera2D()
@@ -34,6 +35,7 @@ def load_map():
                 world[y][x] = 1
 
         save_map()
+        print_message("Loading map...", 0)
 
     else:
 
@@ -46,6 +48,7 @@ def save_map():
 
     with open(MAP_PATH, "w") as f:
         json.dump(world, f)
+    print_message("Saving map...", 0)
 
 
 def draw_map():
@@ -92,6 +95,7 @@ def world_set(x, y, material=1):
 
 def world_erase(x, y):
     world_set(x, y, 0)
+    print_message(f"assassinated on {x} , {y}", 2)
 
 
 def world_get(x, y):
@@ -114,6 +118,7 @@ def world_fill(x, y, w, h, material=1):
 
 def world_clear(x, y, w, h):
     world_fill(x, y, w, h, 0)
+    print_message("cleaning world..." , 2)
 
 def get_wheel_rotation():
     global TMP_cursor_scale
@@ -137,7 +142,6 @@ def draw_ui():
         get_wheel_rotation() * 5,
         pr.RAYWHITE
     )
-    print(get_wheel_rotation())
 
 
 # drawer function

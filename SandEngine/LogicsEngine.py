@@ -3,6 +3,7 @@
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Visuals.VisualEngine import *
+from SandEngine.Debuger import *
 
 Curent_material = 2
 
@@ -24,4 +25,4 @@ def handle_controls():
                 if x*x + y*y <= radius*radius:
                     world_set(X + x, Y + y, Curent_material)
 
-        print(f"painted area at {X}, {Y} with scale {int(get_wheel_rotation())}")
+        print_message(f"painted area at {X}, {Y} with scale {int(get_wheel_rotation())}" , 2)
