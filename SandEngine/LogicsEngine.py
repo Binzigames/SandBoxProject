@@ -43,12 +43,19 @@ def handle_controls():
 
 def handle_ui_buttons():
     global Curent_material
-    if pr.gui_button(
-        pr.Rectangle(300, 250, 200, 60),"sand"):
-        Curent_material = 2
-    if pr.gui_button(
-        pr.Rectangle(300, 350, 200, 60),"Water"):
-        Curent_material = 3
-    if pr.gui_button(
-        pr.Rectangle(300, 450, 200, 60),"Wall"):
-        Curent_material = 4
+
+    button_width = 160
+    button_height = 60
+    spacing = 20
+
+    y = pr.get_screen_height() - button_height - 20
+
+    buttons = [
+        (pr.Rectangle(50, y, button_width, button_height), "Sand", 2),
+        (pr.Rectangle(50 + button_width + spacing, y, button_width, button_height), "Water", 3),
+        (pr.Rectangle(50 + (button_width + spacing) * 2, y, button_width, button_height), "Wall", 4),
+    ]
+
+    for rect, text, material in buttons:
+        if pr.gui_button(rect, text):
+            Curent_material = material
