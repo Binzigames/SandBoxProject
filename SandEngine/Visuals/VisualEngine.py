@@ -83,6 +83,15 @@ def draw_map():
 
 # WORLD EDIT
 
+def get_world():
+
+    global world
+
+    if world is None:
+        load_map()
+
+    return world
+
 def world_set(x, y, material=1):
     global world
 

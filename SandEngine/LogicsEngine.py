@@ -26,10 +26,17 @@ def handle_controls():
         print_message(f"painted area at {X}, {Y} with scale {int(get_wheel_rotation())}" , 2)
 
     if pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_RIGHT):
- 
+
 
         for x in range(-radius, radius + 1):
             for y in range(-radius, radius + 1):
 
                 if x*x + y*y <= radius*radius:
                     world_erase(X + x, Y + y)
+
+    if pr.is_key_pressed(pr.KeyboardKey.KEY_ONE):
+        Curent_material = 2
+    if pr.is_key_pressed(pr.KeyboardKey.KEY_TWO):
+        Curent_material = 3
+    if pr.is_key_pressed(pr.KeyboardKey.KEY_THREE):
+        Curent_material = 4

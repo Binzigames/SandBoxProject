@@ -1,13 +1,14 @@
 #IMPORTING SASSY LIBS
 from SandEngine.Libs import *
-from SandEngine.Visuals.VisualEngine import visuals_root
+from SandEngine.Visuals.VisualEngine import visuals_root , get_world
 from SandEngine.LogicsEngine import handle_controls
 from SandEngine.Debuger import *
+from SandEngine.Physics.PhysicsEngine import update_materials
 # root functions
 def visuals():
     visuals_root()
 def physics():
-    pass
+    update_materials(world=get_world())
 def logics():
     handle_controls()
 def exit():
@@ -26,6 +27,6 @@ def init_root():
         exit()
 
 def root():
-    physics()
-    logics()
     visuals()
+    logics()
+    physics()
