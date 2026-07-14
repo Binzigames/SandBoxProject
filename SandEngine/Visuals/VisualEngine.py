@@ -3,7 +3,7 @@
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Debuger import *
-
+from SandEngine.Physics.objects import *
 #camera
 camera = pr.Camera2D()
 
@@ -147,17 +147,38 @@ def get_wheel_rotation():
 #its "UI" my honey
 Welcome_screen_shown = False
 debug_menu = False
+object_menu = False
+object_mode = False
+
+selected_object = "BOX"
+
+OBJECTS = {
+    "BOX": {
+        "color": pr.RED,
+        "size": (20,20)
+    },
+
+    "STONE BOX": {
+        "color": pr.GRAY,
+        "size": (35,35)
+    },
+
+    "BALL": {
+        "color": pr.BLUE,
+        "size": (25,25)
+    }
+}
 def draw_ui():
-    global Welcome_screen_shown , debug_menu
+    global Welcome_screen_shown , debug_menu , object_mode , selected_object , object_menu
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
-
-    pr.draw_circle_lines(
-        int(world_mouse.x),
-        int(world_mouse.y),
-        get_wheel_rotation() * 5,
-        pr.RAYWHITE
-    )
+    if not object_mode:
+        pr.draw_circle_lines(
+            int(world_mouse.x),
+            int(world_mouse.y),
+            get_wheel_rotation() * 5,
+            pr.RAYWHITE
+        )
     if not  Welcome_screen_shown:
         pr.draw_text(
             "SIMULATED BOX",
@@ -283,18 +304,173 @@ def draw_ui():
             18,
             pr.GREEN
         )
+        # =========================
+        # OBJECT SPAWN SYSTEM
+        # =========================
+
+        mouse = pr.get_mouse_position()
+
+        world_mouse = pr.get_screen_to_world_2d(
+            mouse,
+            camera
+        )
+
+        # OBJECT MODE BUTTON
+
+        pr.draw_rectangle(
+            20,
+            120,
+            170,
+            35,
+            pr.DARKGREEN
+        )
+
+        pr.draw_text(
+            "OBJECT MODE",
+            30,
+            128,
+            18,
+            pr.WHITE
+        )
+
+        if pr.is_mouse_button_pressed(
+                pr.MouseButton.MOUSE_BUTTON_LEFT
+        ):
+
+            if (
+                    mouse.x > 20 and
+                    mouse.x < 190 and
+                    mouse.y > 120 and
+                    mouse.y < 155
+            ):
+                object_mode = not object_mode
+                object_menu = object_mode
+
+        # OBJECT MENU
+
+        if object_menu:
+
+            panel = pr.Rectangle(
+                20,
+                170,
+                240,
+                220
+            )
+
+            pr.draw_rectangle_rec(
+                panel,
+                pr.Color(10, 10, 10, 230)
+            )
+
+            pr.draw_rectangle_lines_ex(
+                panel,
+                2,
+                pr.GREEN
+            )
+
+            pr.draw_text(
+                "SPAWNER",
+                35,
+                185,
+                22,
+                pr.GREEN
+            )
+
+            y = 230
+
+            for name in OBJECTS:
+
+                color = pr.WHITE
+
+                if name == selected_object:
+                    color = pr.YELLOW
+
+                pr.draw_text(
+                    name,
+                    45,
+                    y,
+                    20,
+                    color
+                )
+
+                if pr.is_mouse_button_pressed(
+                        pr.MouseButton.MOUSE_BUTTON_LEFT
+                ):
+
+                    if (
+                            mouse.x > 35 and
+                            mouse.x < 220 and
+                            mouse.y > y and
+                            mouse.y < y + 25
+                    ):
+                        selected_object = name
+
+                y += 35
+
+        # PREVIEW CIRCLE
+
+        if object_mode:
+
+            data = OBJECTS[selected_object]
+
+            pr.draw_rectangle_lines(
+                int(world_mouse.x),
+                int(world_mouse.y),
+                data["size"][0],
+                data["size"][1],
+                pr.YELLOW
+            )
+
+            if pr.is_mouse_button_pressed(
+                    pr.MouseButton.MOUSE_BUTTON_LEFT
+            ):
+                obj = GameObject(
+                    world_mouse.x,
+                    world_mouse.y,
+                    data["size"][0],
+                    data["size"][1],
+                    data["color"]
+                )
+
+                objects.append(obj)
 
     if pr.is_key_pressed(pr.KeyboardKey.KEY_TAB):
         debug_menu = not debug_menu
 
 # drawer function
 def visuals_root():
+
     global camera
+
+
+    dt = pr.get_frame_time()
+
+
+    update_objects(
+        world,
+        dt
+    )
+
+    push_material(
+        world,
+        objects[0]
+    ) if objects else None
+
+
+
     pr.begin_mode_2d(camera)
 
+
     pr.clear_background(pr.BLACK)
+
+
     draw_map()
+
+
+    draw_objects()
+
+
     draw_ui()
 
-    pr.end_mode_2d()
 
+    pr.end_mode_2d()
