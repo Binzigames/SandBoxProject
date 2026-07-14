@@ -153,159 +153,128 @@ def draw_ui():
         pr.RAYWHITE
     )
     if not  Welcome_screen_shown:
-        pr.draw_text("SIMULATED BOX NEAR ME..." , 20 , pr.get_screen_height() // 2 , 50 ,pr.GRAY)
-        pr.draw_text("DEVELOPED BY PORKO_DEV / PRESS LMB TO CREATE SOMETHING", 20 , pr.get_screen_height() // 2 + 60, 20, pr.DARKGRAY)
-        pr.draw_text("RMB - DELETE SOMETHING / 1-4 CHOSE MATERIAL (DownMenu)/ F11 - Fullscreen", 20,  40, 20,pr.DARKGRAY)
+        pr.draw_text(
+            "SIMULATED BOX",
+            80,
+            180,
+            42,
+            pr.GREEN
+        )
+
+        pr.draw_text(
+            "PHYSICS SANDBOX v1.0",
+            80,
+            235,
+            22,
+            pr.DARKGREEN
+        )
+
+        if int(pr.get_time() * 2) % 2:
+            pr.draw_text(
+                "PRESS LEFT MOUSE BUTTON TO START",
+                80,
+                320,
+                22,
+                pr.GREEN
+            )
+
+        pr.draw_text(
+            "LMB  CREATE OBJECT",
+            80,
+            380,
+            18,
+            pr.DARKGREEN
+        )
+
+        pr.draw_text(
+            "RMB  DELETE OBJECT",
+            80,
+            405,
+            18,
+            pr.DARKGREEN
+        )
         if pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_LEFT):
             Welcome_screen_shown = True
     elif debug_menu:
 
-        panel_width = 320
-        panel_height = 220
-
         panel = pr.Rectangle(
-            pr.get_screen_width() - panel_width - 20,
-            30,
-            panel_width,
-            panel_height
+            pr.get_screen_width() - 340,
+            20,
+            320,
+            230
         )
 
+        pr.draw_rectangle_rec(panel, pr.Color(15, 18, 15, 255))
 
-        pr.draw_rectangle_rounded(
-            pr.Rectangle(
-                panel.x + 6,
-                panel.y + 6,
-                panel.width,
-                panel.height
-            ),
-            0.15,
-            12,
-            pr.Color(0, 0, 0, 120)
-        )
-
-
-        pr.draw_rectangle_rounded(
+        pr.draw_rectangle_lines_ex(
             panel,
-            0.15,
-            12,
-            pr.Color(20, 22, 30, 230)
-        )
-
-
-        pr.draw_rectangle_rounded_lines(
-            panel,
-            0.15,
-            12,
-            pr.Color(100, 100, 120, 255)
-        )
-
-        pr.draw_text(
-            "DEBUG PANEL",
-            int(panel.x + 20),
-            int(panel.y + 15),
-            24,
+            2,
             pr.GREEN
         )
 
-        pr.draw_line(
-            int(panel.x + 15),
-            int(panel.y + 50),
-            int(panel.x + panel.width - 15),
-            int(panel.y + 50),
-            pr.Color(80, 80, 100, 255)
+        pr.draw_rectangle(
+            int(panel.x),
+            int(panel.y),
+            int(panel.width),
+            28,
+            pr.GREEN
+        )
+
+        pr.draw_text(
+            " DEBUG TERMINAL ",
+            int(panel.x + 8),
+            int(panel.y + 6),
+            18,
+            pr.BLACK
         )
 
         mouse = pr.get_mouse_position()
 
-        debug_info = [
-            f"FPS: {pr.get_fps()}",
-            f"Mouse X: {int(mouse.x)}",
-            f"Mouse Y: {int(mouse.y)}",
+        info = [
+            f"FPS        : {pr.get_fps()}",
+            f"MOUSE X    : {int(mouse.x)}",
+            f"MOUSE Y    : {int(mouse.y)}"
         ]
 
-        y = panel.y + 65
+        y = panel.y + 45
 
-        for text in debug_info:
+        for line in info:
             pr.draw_text(
-                text,
-                int(panel.x + 20),
+                line,
+                int(panel.x + 12),
                 int(y),
                 18,
-                pr.LIGHTGRAY
+                pr.GREEN
             )
-            y += 24
-        pr.draw_circle(
-            int(panel.x + panel.width - 30),
-            int(panel.y + 28),
-            8,
-            pr.GREEN
-        )
+            y += 22
+
+        if int(pr.get_time() * 2) % 2:
+            pr.draw_text(
+                "_",
+                int(panel.x + 12),
+                int(y + 5),
+                18,
+                pr.GREEN
+            )
     else:
+
+        panel = pr.Rectangle(15, 15, 300, 90)
+
+        pr.draw_rectangle_rec(panel, pr.Color(15, 15, 15, 220))
+        pr.draw_rectangle_lines_ex(panel, 2, pr.GREEN)
+
         pr.draw_text(
-            "Created by porko_dev",
+            "SIMULATED BOX v1.0",
+            28,
+            28,
             20,
-            20,
-            18,
-            pr.Color(180, 180, 180, 190)
-        )
-
-        # Верхня інформаційна панель
-        panel_width = 300
-        panel_height = 70
-
-        panel = pr.Rectangle(
-            pr.get_screen_width() - panel_width - 20,
-            25,
-            panel_width,
-            panel_height
-        )
-
-        pr.draw_rectangle_rounded(
-            pr.Rectangle(
-                panel.x + 5,
-                panel.y + 5,
-                panel.width,
-                panel.height
-            ),
-            0.15,
-            10,
-            pr.Color(0, 0, 0, 90)
-        )
-
-        pr.draw_rectangle_rounded(
-            panel,
-            0.15,
-            10,
-            pr.Color(30, 30, 40, 200)
-        )
-
-        pr.draw_rectangle_rounded_lines(
-            panel,
-            0.15,
-            10,
-            pr.Color(100, 100, 110, 255)
-        )
-
-        pr.draw_text(
-            "SIMULATED BOX",
-            int(panel.x + 20),
-            int(panel.y + 12),
-            22,
-            pr.WHITE
-        )
-
-        pr.draw_text(
-            "RUNNING",
-            int(panel.x + 20),
-            int(panel.y + 42),
-            16,
             pr.GREEN
         )
-
-        pr.draw_circle(
-            int(panel.x + panel.width - 30),
-            int(panel.y + 35),
-            8,
+        pr.draw_text(
+            f"FPS : {pr.get_fps()}",
+            28,
+            75,
+            18,
             pr.GREEN
         )
 

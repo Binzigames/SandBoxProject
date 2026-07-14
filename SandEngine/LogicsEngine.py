@@ -52,111 +52,185 @@ def handle_controls():
 
 def handle_ui_buttons():
     global Curent_material
-    button_width = 160
-    button_height = 60
-    spacing = 20
-    panel_height = button_height + 40
+
+    button_width = 150
+    button_height = 45
+    spacing = 15
+
+    # RETRO PANEL
+    panel_height = 75
+
+    panel = pr.Rectangle(
+        20,
+        pr.get_screen_height() - panel_height - 15,
+        pr.get_screen_width() - 40,
+        panel_height
+    )
+
+    # background
+    pr.draw_rectangle_rec(
+        panel,
+        pr.Color(10, 15, 10, 230)
+    )
+
+    # border
+    pr.draw_rectangle_lines_ex(
+        panel,
+        2,
+        pr.GREEN
+    )
+
+    # title
+    pr.draw_text(
+        " MATERIAL SELECT >",
+        int(panel.x + 15),
+        int(panel.y + 8),
+        18,
+        pr.GREEN
+    )
 
 
-    panel = pr.Rectangle(20,pr.get_screen_height() - panel_height - 10,pr.get_screen_width() - 40,panel_height)
-    pr.draw_rectangle_rounded(pr.Rectangle( panel.x + 5,panel.y + 5,panel.width,panel.height),0.15,12,pr.Color(0, 0, 0, 100))
-    pr.draw_rectangle_rounded( panel,0.15,12,pr.Color(25, 25, 35, 220))
-    pr.draw_line(int(panel.x),int(panel.y),int(panel.x + panel.width),int(panel.y),pr.Color(80, 80, 100, 255),)
-
-
-    y = pr.get_screen_height() - button_height - 20
+    y = panel.y + 28
 
     buttons = [
-        (pr.Rectangle(50, y, button_width, button_height), "Sand", 2, pr.Color(220, 190, 90, 255)),
-        (pr.Rectangle(50 + button_width + spacing, y, button_width, button_height), "Water", 3, pr.Color(70, 150, 240, 255)),
-        (pr.Rectangle(50 + (button_width + spacing) * 2, y, button_width, button_height), "Wall", 4, pr.Color(120, 120, 120, 255)),
+        (
+            pr.Rectangle(50, y, button_width, button_height),
+            "[1] SAND",
+            2,
+            pr.Color(210,180,70,255)
+        ),
+
+        (
+            pr.Rectangle(
+                50 + button_width + spacing,
+                y,
+                button_width,
+                button_height
+            ),
+            "[2] WATER",
+            3,
+            pr.Color(50,140,220,255)
+        ),
+
+        (
+            pr.Rectangle(
+                50 + (button_width + spacing)*2,
+                y,
+                button_width,
+                button_height
+            ),
+            "[3] WALL",
+            4,
+            pr.Color(120,120,120,255)
+        )
     ]
+
 
     mouse = pr.get_mouse_position()
 
+
     for rect, text, material, color in buttons:
-        hovered = pr.check_collision_point_rec(mouse, rect)
 
-        shadow = pr.Rectangle(rect.x + 5, rect.y + 5, rect.width, rect.height)
-        pr.draw_rectangle_rounded(shadow, 0.2, 10, pr.Color(0, 0, 0, 80))
+        hovered = pr.check_collision_point_rec(
+            mouse,
+            rect
+        )
 
 
+        # button background
         if hovered:
             color = pr.Color(
-                min(color.r + 30, 255),
-                min(color.g + 30, 255),
-                min(color.b + 30, 255),
+                min(color.r+40,255),
+                min(color.g+40,255),
+                min(color.b+40,255),
                 255
             )
 
-        pr.draw_rectangle_rounded(rect, 0.2, 10, color)
 
-
-        pr.draw_rectangle_rounded_lines(
+        pr.draw_rectangle_rec(
             rect,
-            0.2,
-            10,
-            pr.WHITE
+            pr.Color(
+                5,
+                5,
+                5,
+                255
+            )
         )
 
 
-        text_width = pr.measure_text(text, 24)
+        pr.draw_rectangle_lines_ex(
+            rect,
+            2,
+            color
+        )
+
+
         pr.draw_text(
             text,
-            int(rect.x + rect.width / 2 - text_width / 2),
-            int(rect.y + 18),
-            24,
-            pr.WHITE
+            int(rect.x + 12),
+            int(rect.y + 12),
+            18,
+            color
         )
 
-        if hovered and pr.is_mouse_button_pressed(pr.MouseButton.MOUSE_BUTTON_LEFT):
+
+        if hovered and pr.is_mouse_button_pressed(
+            pr.MouseButton.MOUSE_BUTTON_LEFT
+        ):
             Curent_material = material
 
 
 
+    # RESET BUTTON
+
     reset_rect = pr.Rectangle(
-        pr.get_screen_width() - 220,
+        pr.get_screen_width()-230,
         y,
         200,
-        60
+        button_height
     )
 
-    hovered = pr.check_collision_point_rec(mouse, reset_rect)
 
-    reset_color = pr.Color(200, 60, 60, 255)
+    hovered = pr.check_collision_point_rec(
+        mouse,
+        reset_rect
+    )
+
+
+    reset_color = pr.RED
+
     if hovered:
-        reset_color = pr.Color(240, 80, 80, 255)
+        reset_color = pr.Color(
+            255,
+            80,
+            80,
+            255
+        )
 
-    pr.draw_rectangle_rounded(
-        pr.Rectangle(reset_rect.x + 5, reset_rect.y + 5,
-                     reset_rect.width, reset_rect.height),
-        0.2,
-        10,
-        pr.Color(0,0,0,80)
+
+    pr.draw_rectangle_rec(
+        reset_rect,
+        pr.Color(10,5,5,255)
     )
 
-    pr.draw_rectangle_rounded(
+
+    pr.draw_rectangle_lines_ex(
         reset_rect,
-        0.2,
-        10,
+        2,
         reset_color
     )
 
-    pr.draw_rectangle_rounded_lines(
-        reset_rect,
-        0.2,
-        10,
-        pr.WHITE
-    )
 
-    text = "RESET"
     pr.draw_text(
-        text,
-        int(reset_rect.x + 55),
-        int(reset_rect.y + 18),
-        24,
-        pr.WHITE
+        "[R] RESET MAP",
+        int(reset_rect.x+18),
+        int(reset_rect.y+12),
+        18,
+        reset_color
     )
 
-    if hovered and pr.is_mouse_button_pressed(pr.MouseButton.MOUSE_BUTTON_LEFT):
+
+    if hovered and pr.is_mouse_button_pressed(
+        pr.MouseButton.MOUSE_BUTTON_LEFT
+    ):
         load_map()
