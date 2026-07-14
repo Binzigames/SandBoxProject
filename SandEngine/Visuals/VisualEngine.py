@@ -348,7 +348,7 @@ def draw_ui():
         pr.draw_circle_lines(
             int(world_mouse.x),
             int(world_mouse.y),
-            get_wheel_rotation() * 5,
+            max(1, min(int(get_wheel_rotation()), 5)) * 5,
             pr.RAYWHITE
         )
     if not  Welcome_screen_shown:
