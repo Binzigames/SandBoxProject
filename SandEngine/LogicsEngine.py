@@ -259,5 +259,3 @@ def handle_ui_buttons():
         pr.MouseButton.MOUSE_BUTTON_LEFT
     ):
         load_map()
-def phys_tick():
-    update_map_texture()

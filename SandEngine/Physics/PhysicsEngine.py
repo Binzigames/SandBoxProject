@@ -266,7 +266,6 @@ def update_materials(world):
 
     count = 0
 
-
     for x,y in list(active_cells):
 
         active_cells.remove((x,y))

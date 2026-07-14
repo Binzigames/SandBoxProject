@@ -1,5 +1,6 @@
 # VISUAL ENGINE DRAWS SOME SHIT ON SCREEN
 #importing for you honey ~
+
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Debuger import *
@@ -609,6 +610,8 @@ def draw_ui():
     if pr.is_key_pressed(pr.KeyboardKey.KEY_TAB):
         debug_menu = not debug_menu
 
+
+
 # drawer function
 def visuals_root():
 
@@ -629,7 +632,6 @@ def visuals_root():
     ) if objects else None
 
     update_dirty_texture()
-
 
     pr.begin_mode_2d(camera)
 

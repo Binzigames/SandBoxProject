@@ -27,9 +27,6 @@ def M_Sand(color, x, y):
 # WATER
 # =========================
 def M_Water(color, x, y, world):
-    # піна
-    if y > 0 and world[y - 1][x] != 3:
-        return pr.Color(180, 240, 255, 255)
 
     wave = math.sin(x * 0.35 + y * 0.15) * 12
     n = tex_noise(x, y) * 0.3
@@ -38,7 +35,7 @@ def M_Water(color, x, y, world):
         clamp(25 + wave + n),
         clamp(110 + wave + n),
         clamp(200 + wave),
-        255
+        199
     )
 
 
