@@ -72,8 +72,6 @@ def draw_map():
                 color = M_Water(color, x , y ,get_world())
             elif cell == 4:
                 color = M_Wall(color, x , y)
-            elif cell == 5:
-                color = M_Lava(color, x, y, get_world())
 
             pr.draw_rectangle(
                 x * PIXEL_SIZE,

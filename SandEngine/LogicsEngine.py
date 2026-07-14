@@ -40,8 +40,6 @@ def handle_controls():
         Curent_material = 3
     if pr.is_key_pressed(pr.KeyboardKey.KEY_THREE):
         Curent_material = 4
-    if pr.is_key_pressed(pr.KeyboardKey.KEY_FOUR):
-        Current_material = 5
     if pr.is_key_pressed(pr.KeyboardKey.KEY_F11):
         Fullscreen = not Fullscreen
 
@@ -124,17 +122,6 @@ def handle_ui_buttons():
             "[3] WALL",
             4,
             pr.Color(120,120,120,255)
-        ),
-        (
-            pr.Rectangle(
-                50 + (button_width + spacing) * 3,
-                y,
-                button_width,
-                button_height
-            ),
-            "[4] LAVA",
-            5,
-            pr.Color(255, 0, 0, 255)
         )
     ]
 
