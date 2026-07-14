@@ -41,6 +41,22 @@ def M_Water(color, x, y, world):
     )
 
 
+
+def M_Lava(color, x, y, world):
+    if y > 0 and world[y-1][x] != 3:
+        return pr.Color(200, 0, 0, 255)
+
+    wave = math.sin(x * 0.4 + y * 0.2) * 15
+
+    noise = random.randint(0, 8)
+
+    return pr.Color(
+        int(200 + wave + noise),
+        int(0 + wave + noise),
+        int(0 + wave),
+        255
+    )
+
 def M_Wall(color, x, y):
     nois = noise()
 
