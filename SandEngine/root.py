@@ -5,13 +5,14 @@ from SandEngine.LogicsEngine import handle_controls , handle_ui_buttons
 from SandEngine.Debuger import *
 from SandEngine.Physics.PhysicsEngine import update_materials
 # root functions
+world = get_world()
 def visuals():
     pr.begin_drawing()
     visuals_root()
     handle_ui_buttons()
     pr.end_drawing()
 def physics():
-    update_materials(world=get_world())
+    update_materials(world)
 def logics():
     handle_controls()
 def exit():
@@ -24,12 +25,13 @@ def exit():
 def init_root():
     pr.init_window( 900 , 800 , "SandBoxProject")
     print_init()
+    pr.set_target_fps(60)
     while not pr.window_should_close():
         root()
     else:
         exit()
 
 def root():
-    visuals()
     logics()
     physics()
+    visuals()

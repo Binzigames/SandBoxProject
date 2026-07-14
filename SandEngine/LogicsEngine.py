@@ -8,45 +8,58 @@ from SandEngine.Debuger import *
 Curent_material = 2
 Fullscreen = False
 def handle_controls():
-    global Curent_material , Fullscreen
+    global Curent_material, Fullscreen
+
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
 
     X = int(world_mouse.x // 4)
     Y = int(world_mouse.y // 4)
+
     radius = int(get_wheel_rotation())
-    
-    if pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_LEFT):
-        for x in range(-radius, radius + 1):
-            for y in range(-radius, radius + 1):
+    r2 = radius * radius
 
-                if x*x + y*y <= radius*radius:
-                    world_set(X + x, Y + y, Curent_material)
+    left = pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_LEFT)
+    right = pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_RIGHT)
 
-        print_message(f"painted area at {X}, {Y} with scale {int(get_wheel_rotation())}" , 2)
+    if left or right:
 
-    if pr.is_mouse_button_down(pr.MouseButton.MOUSE_BUTTON_RIGHT):
+        for yy in range(-radius, radius + 1):
 
+            yy2 = yy * yy
 
-        for x in range(-radius, radius + 1):
-            for y in range(-radius, radius + 1):
+            for xx in range(-radius, radius + 1):
 
-                if x*x + y*y <= radius*radius:
-                    world_erase(X + x, Y + y)
+                if xx * xx + yy2 > r2:
+                    continue
+
+                wx = X + xx
+                wy = Y + yy
+
+                if left:
+                    world_set(wx, wy, Curent_material)
+                else:
+                    world_set(wx, wy, 0)
 
     if pr.is_key_pressed(pr.KeyboardKey.KEY_ONE):
         Curent_material = 2
-    if pr.is_key_pressed(pr.KeyboardKey.KEY_TWO):
+
+    elif pr.is_key_pressed(pr.KeyboardKey.KEY_TWO):
         Curent_material = 3
-    if pr.is_key_pressed(pr.KeyboardKey.KEY_THREE):
+
+    elif pr.is_key_pressed(pr.KeyboardKey.KEY_THREE):
         Curent_material = 4
+
+    elif pr.is_key_pressed(pr.KeyboardKey.KEY_FOUR):
+        Curent_material = 5
+
     if pr.is_key_pressed(pr.KeyboardKey.KEY_F11):
+
         Fullscreen = not Fullscreen
 
-        if Fullscreen:
-            pr.toggle_fullscreen()
-        else:
-            pr.toggle_fullscreen()
+        pr.toggle_fullscreen()
+
+        if not Fullscreen:
             pr.set_window_size(800, 900)
 
 
