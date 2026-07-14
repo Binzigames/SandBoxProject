@@ -67,7 +67,7 @@ def draw_map():
             color = pr.BROWN
 
             if cell == 2:
-                color = M_sand(color , x , y)
+                color = M_Sand(color , x , y)
             elif cell == 3:
                 color = M_Water(color, x , y ,get_world())
             elif cell == 4:

@@ -1,54 +1,53 @@
-# VISUAL ENGINE/MATERIALS GIVES SOME MATERIALS
-#importing for you honey ~
 from SandEngine.Libs import *
 
-IsnoiseGenerated = False
-NoiseTMP = 0
-def noise():
-    global IsnoiseGenerated , NoiseTMP
-    if not IsnoiseGenerated:
-        noise = random.randint(-18, 18)
-        NoiseTMP = noise
-        IsnoiseGenerated = True
-    else:
-        noise = NoiseTMP
-    return noise
+def tex_noise(x, y):
+    random.seed((x * 92837111) ^ (y * 689287499))
+    return random.randint(-18, 18)
 
-def M_sand(color, x, y):
-    nois = noise()
+
+def clamp(v):
+    return max(0, min(255, int(v)))
+
+
+# =========================
+# SAND
+# =========================
+def M_Sand(color, x, y):
+    n = tex_noise(x, y)
 
     return pr.Color(
-        210 + nois,
-        175 + nois,
-        100 + nois // 2,
+        clamp(210 + n),
+        clamp(175 + n),
+        clamp(100 + n // 2),
         255
     )
 
 
+# =========================
+# WATER
+# =========================
 def M_Water(color, x, y, world):
-    if y > 0 and world[y-1][x] != 3:
+    # піна
+    if y > 0 and world[y - 1][x] != 3:
         return pr.Color(180, 240, 255, 255)
 
-    wave = math.sin(x * 0.4 + y * 0.2) * 15
-
-    noise = random.randint(0, 8)
+    wave = math.sin(x * 0.35 + y * 0.15) * 12
+    n = tex_noise(x, y) * 0.3
 
     return pr.Color(
-        int(20 + wave + noise),
-        int(110 + wave + noise),
-        int(200 + wave),
+        clamp(25 + wave + n),
+        clamp(110 + wave + n),
+        clamp(200 + wave),
         255
     )
 
 
+# =========================
+# WALL
+# =========================
 def M_Wall(color, x, y):
-    nois = noise()
+    n = tex_noise(x, y)
 
-    base = 120 + nois
+    base = clamp(120 + n)
 
-    return pr.Color(
-        base,
-        base,
-        base,
-        255
-    )
+    return pr.Color(base, base, base, 255)
