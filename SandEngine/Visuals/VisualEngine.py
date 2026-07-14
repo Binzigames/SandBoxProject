@@ -3,6 +3,7 @@
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Debuger import *
+from SandEngine.Visuals.Materials import *
 from SandEngine.Physics.objects import *
 #camera
 camera = pr.Camera2D()
@@ -66,11 +67,11 @@ def draw_map():
             color = pr.BROWN
 
             if cell == 2:
-                color = pr.YELLOW
+                color = M_sand(color)
             elif cell == 3:
-                color = pr.BLUE
+                color = M_Water(color)
             elif cell == 4:
-                color = pr.RED
+                color = M_Wall(color)
 
             pr.draw_rectangle(
                 x * PIXEL_SIZE,
