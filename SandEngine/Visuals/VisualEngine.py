@@ -5,6 +5,7 @@ from SandEngine.DATA.TMP import *
 from SandEngine.Debuger import *
 from SandEngine.Visuals.Materials import *
 from SandEngine.Physics.objects import *
+from SandEngine.Physics.PhysicsEngine import *
 #camera
 camera = pr.Camera2D()
 
@@ -52,11 +53,32 @@ def save_map():
     print_message("Saving map...", 0)
 
 
-def draw_map():
-    global world
+map_texture = None
+map_image = None
+
+
+def create_map_texture():
+    global world, map_texture, map_image
 
     if world is None:
         load_map()
+
+    width = len(world[0]) * PIXEL_SIZE
+    height = len(world) * PIXEL_SIZE
+
+    map_image = pr.gen_image_color(
+        width,
+        height,
+        pr.BLANK
+    )
+
+    update_map_texture()
+
+    map_texture = pr.load_texture_from_image(map_image)
+
+
+def update_map_texture():
+    global map_image
 
     for y, row in enumerate(world):
         for x, cell in enumerate(row):
@@ -67,23 +89,77 @@ def draw_map():
             color = pr.BROWN
 
             if cell == 2:
-                color = M_Sand(color , x , y)
+                color = M_Sand(color, x, y)
+
             elif cell == 3:
-                color = M_Water(color, x , y ,get_world())
+                color = M_Water(color, x, y, get_world())
+
             elif cell == 4:
-                color = M_Wall(color, x , y)
+                color = M_Wall(color, x, y)
+
             elif cell == 5:
                 color = M_graviy(color, x, y)
 
-            pr.draw_rectangle(
-                x * PIXEL_SIZE,
-                y * PIXEL_SIZE,
-                PIXEL_SIZE,
-                PIXEL_SIZE,
+
+            for py in range(PIXEL_SIZE):
+                for px in range(PIXEL_SIZE):
+
+                    pr.image_draw_pixel(
+                        map_image,
+                        x * PIXEL_SIZE + px,
+                        y * PIXEL_SIZE + py,
+                        color
+                    )
+
+
+def update_cell_texture(x, y):
+    global map_texture
+
+    cell = world[y][x]
+
+    color = pr.BLANK
+
+    if cell == 2:
+        color = M_Sand(pr.BROWN, x, y)
+
+    elif cell == 3:
+        color = M_Water(pr.BLUE, x, y, get_world())
+
+    elif cell == 4:
+        color = M_Wall(pr.GRAY, x, y)
+
+    elif cell == 5:
+        color = M_graviy(pr.GRAY, x, y)
+
+
+    for py in range(PIXEL_SIZE):
+        for px in range(PIXEL_SIZE):
+
+            pr.image_draw_pixel(
+                map_image,
+                x * PIXEL_SIZE + px,
+                y * PIXEL_SIZE + py,
                 color
             )
 
+    pr.update_texture(
+        map_texture,
+        map_image.data
+    )
 
+
+def draw_map():
+    global map_texture
+
+    if map_texture is None:
+        create_map_texture()
+
+    pr.draw_texture(
+        map_texture,
+        0,
+        0,
+        pr.WHITE
+    )
 # WORLD EDIT
 
 def get_world():
@@ -95,7 +171,7 @@ def get_world():
 
     return world
 
-def world_set(x, y, material=1):
+def world_set(x,y,material=1):
     global world
 
     if world is None:
@@ -104,9 +180,13 @@ def world_set(x, y, material=1):
     if 0 <= x < MAP_W and 0 <= y < MAP_H:
         world[y][x] = material
 
+        if map_texture:
+            update_cell_texture(x,y)
 
 def world_erase(x, y):
+    global world
     world_set(x, y, 0)
+    update_materials(world)
     print_message(f"assassinated on {x} , {y}", 2)
 
 
@@ -130,6 +210,7 @@ def world_fill(x, y, w, h, material=1):
 
 def world_clear(x, y, w, h):
     world_fill(x, y, w, h, 0)
+    update_cell_texture(x, y)
     print_message("cleaning world..." , 2)
 
 def get_wheel_rotation():
@@ -171,6 +252,48 @@ OBJECTS = {
         "size": (25,25)
     }
 }
+def update_materials():
+    global world, map_texture, map_image
+
+    if world is None:
+        return
+
+    for y, row in enumerate(world):
+        for x, cell in enumerate(row):
+
+            if cell == 0:
+                continue
+
+            color = pr.BROWN
+
+            if cell == 2:
+                color = M_Sand(color, x, y)
+
+            elif cell == 3:
+                color = M_Water(pr.BLUE, x, y, world)
+
+            elif cell == 4:
+                color = M_Wall(pr.GRAY, x, y)
+
+            elif cell == 5:
+                color = M_graviy(pr.GRAY, x, y)
+
+
+            for py in range(PIXEL_SIZE):
+                for px in range(PIXEL_SIZE):
+
+                    pr.image_draw_pixel(
+                        map_image,
+                        x * PIXEL_SIZE + px,
+                        y * PIXEL_SIZE + py,
+                        color
+                    )
+
+    if map_texture:
+        pr.update_texture(
+            map_texture,
+            map_image.data
+        )
 def draw_ui():
     global Welcome_screen_shown , debug_menu , object_mode , selected_object , object_menu
     mouse = pr.get_mouse_position()
@@ -458,7 +581,8 @@ def visuals_root():
         world,
         objects[0]
     ) if objects else None
-
+    for x, y in get_dirty_cells():
+        update_cell_texture(x, y)
 
 
     pr.begin_mode_2d(camera)
@@ -469,9 +593,7 @@ def visuals_root():
 
     draw_map()
 
-
     draw_objects()
-
 
     draw_ui()
 

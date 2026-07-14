@@ -1,6 +1,8 @@
 # MATERIAL PHYSICS
-# handles sand, water and other tile behaviors
+# optimized sand/water physics
+
 from SandEngine.Libs import *
+
 
 # ===== MATERIAL IDS =====
 
@@ -10,6 +12,7 @@ WATER = 3
 STONE = 4
 GRAVIY = 5
 
+
 # ===== MAP SIZE =====
 
 MAP_W = 256
@@ -17,146 +20,300 @@ MAP_H = 256
 
 
 
+# ===== DIRTY PIXELS =====
+
+dirty_cells = set()
+
+
+def mark_dirty(x, y):
+
+    if inside(x, y):
+        dirty_cells.add((x, y))
+
+
+
+def get_dirty_cells():
+
+    global dirty_cells
+
+    result = dirty_cells.copy()
+    dirty_cells.clear()
+
+    return result
+
+
+
+# ===== ACTIVE PHYSICS CELLS =====
+
+active_cells = set()
+
+
+def activate(x, y):
+
+    if inside(x, y):
+
+        if y < MAP_H:
+
+            active_cells.add((x, y))
+
+
+
+def add_neighbors(x, y):
+
+    activate(x, y)
+    activate(x, y-1)
+    activate(x, y+1)
+    activate(x-1, y)
+    activate(x+1, y)
+
+
+
 # ===== HELPERS =====
 
-def inside(x, y):
-    return 0 <= x < MAP_W and 0 <= y < MAP_H
+def inside(x,y):
 
-
-
-def swap(world, x1, y1, x2, y2):
-
-    world[y1][x1], world[y2][x2] = (
-        world[y2][x2],
-        world[y1][x1]
+    return (
+        0 <= x < MAP_W and
+        0 <= y < MAP_H
     )
+
+
+
+def move_cell(world,x1,y1,x2,y2):
+
+    world[y2][x2] = world[y1][x1]
+    world[y1][x1] = AIR
+
+
+    mark_dirty(x1,y1)
+    mark_dirty(x2,y2)
+
+
+    add_neighbors(x1,y1)
+    add_neighbors(x2,y2)
 
 
 
 # ===== SAND =====
 
-def update_sand(world, x, y):
+def update_sand(world,x,y):
 
-    row = world[y]
-    below = world[y + 1]
-
-    if below[x] == AIR:
-        below[x] = row[x]
-        row[x] = AIR
+    if not inside(x,y):
         return
 
-    direction = -1 if random.getrandbits(1) else 1
 
-    if direction == -1:
+    if world[y][x] != SAND and world[y][x] != GRAVIY:
+        return
 
-        if x > 0:
-            if below[x - 1] == AIR or below[x - 1] == WATER:
-                below[x - 1], row[x] = row[x], below[x - 1]
+
+
+    # вниз
+
+    if y + 1 < MAP_H:
+
+        if world[y+1][x] == AIR:
+
+            move_cell(
+                world,
+                x,y,
+                x,y+1
+            )
+
+            return
+
+
+
+    direction = (
+        -1
+        if random.getrandbits(1)
+        else 1
+    )
+
+
+    for dx in (direction,-direction):
+
+        nx=x+dx
+
+
+        if inside(nx,y+1):
+
+            target = world[y+1][nx]
+
+
+            if target == AIR or target == WATER:
+
+                old = world[y+1][nx]
+
+                world[y+1][nx] = world[y][x]
+                world[y][x] = old
+
+
+                mark_dirty(x,y)
+                mark_dirty(nx,y+1)
+
+
+                add_neighbors(x,y)
+                add_neighbors(nx,y+1)
+
                 return
 
-        if x < MAP_W - 1:
-            if below[x + 1] == AIR or below[x + 1] == WATER:
-                below[x + 1], row[x] = row[x], below[x + 1]
-                return
 
-    else:
 
-        if x < MAP_W - 1:
-            if below[x + 1] == AIR or below[x + 1] == WATER:
-                below[x + 1], row[x] = row[x], below[x + 1]
-                return
-
-        if x > 0:
-            if below[x - 1] == AIR or below[x - 1] == WATER:
-                below[x - 1], row[x] = row[x], below[x - 1]
-                return
 
 # ===== WATER =====
 
-def update_water(world, x, y):
+def update_water(world,x,y):
 
-    row = world[y]
-    below = world[y + 1]
-
-    if below[x] == AIR:
-        below[x] = WATER
-        row[x] = AIR
+    if not inside(x,y):
         return
 
-    direction = -1 if random.getrandbits(1) else 1
 
-    # діагональ вниз
-    if direction == -1:
+    if world[y][x] != WATER:
+        return
 
-        if x > 0 and below[x - 1] == AIR:
-            below[x - 1] = WATER
-            row[x] = AIR
+
+
+    # вниз
+
+    if y+1 < MAP_H:
+
+
+        if world[y+1][x] == AIR:
+
+            move_cell(
+                world,
+                x,y,
+                x,y+1
+            )
+
             return
 
-        if x < MAP_W - 1 and below[x + 1] == AIR:
-            below[x + 1] = WATER
-            row[x] = AIR
-            return
 
-    else:
 
-        if x < MAP_W - 1 and below[x + 1] == AIR:
-            below[x + 1] = WATER
-            row[x] = AIR
-            return
+    direction = (
+        -1
+        if random.getrandbits(1)
+        else 1
+    )
 
-        if x > 0 and below[x - 1] == AIR:
-            below[x - 1] = WATER
-            row[x] = AIR
-            return
 
-    MAX_FLOW = 2
 
-    for dx in (direction, -direction):
+    # діагональ
 
-        for dist in range(1, MAX_FLOW + 1):
+    for dx in (direction,-direction):
 
-            nx = x + dx * dist
+        nx=x+dx
 
-            if nx < 0 or nx >= MAP_W:
-                break
 
-            if row[nx] != AIR:
-                break
+        if inside(nx,y+1):
 
-            if below[nx] == AIR:
-                row[nx] = WATER
-                row[x] = AIR
+            if world[y+1][nx] == AIR:
+
+
+                move_cell(
+                    world,
+                    x,y,
+                    nx,y+1
+                )
+
                 return
 
-        nx = x + dx
 
-        if 0 <= nx < MAP_W and row[nx] == AIR:
-            row[nx] = WATER
-            row[x] = AIR
+
+    # горизонтальна течія
+
+    FLOW = 3
+
+
+    for dx in (direction,-direction):
+
+        for dist in range(1,FLOW+1):
+
+            nx=x+dx*dist
+
+
+            if not inside(nx,y):
+                break
+
+
+            if world[y][nx] != AIR:
+                break
+
+
+
+            world[y][nx]=WATER
+            world[y][x]=AIR
+
+
+            mark_dirty(x,y)
+            mark_dirty(nx,y)
+
+
+            add_neighbors(x,y)
+            add_neighbors(nx,y)
+
+
             return
+
+
+
 
 # ===== MAIN UPDATE =====
 
 def update_materials(world):
 
-    for y in range(MAP_H - 2, -1, -1):
+    global active_cells
 
-        start = random.randint(0, MAP_W - 1)
 
-        x = start
+    # додаємо нові активні клітини
 
-        for _ in range(MAP_W):
+    new_active = set(active_cells)
 
-            tile = world[y][x]
+    active_cells.clear()
 
-            if tile == WATER:
-                update_water(world, x, y)
 
-            elif tile == SAND or tile == GRAVIY:
-                update_sand(world, x, y)
 
-            x += 1
+    for x,y in new_active:
 
-            if x == MAP_W:
-                x = 0
+
+        if not inside(x,y):
+            continue
+
+
+
+        tile = world[y][x]
+
+
+        if tile == SAND or tile == GRAVIY:
+
+            update_sand(
+                world,
+                x,
+                y
+            )
+
+
+        elif tile == WATER:
+
+            update_water(
+                world,
+                x,
+                y
+            )
+
+
+
+# ===== INITIALIZE MATERIAL =====
+
+def activate_world(world):
+
+    for y in range(MAP_H):
+
+        for x in range(MAP_W):
+
+            if world[y][x] in (
+                SAND,
+                WATER,
+                GRAVIY
+            ):
+                activate(x,y)

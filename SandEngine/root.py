@@ -3,7 +3,7 @@ from SandEngine.Libs import *
 from SandEngine.Visuals.VisualEngine import visuals_root , get_world
 from SandEngine.LogicsEngine import handle_controls , handle_ui_buttons
 from SandEngine.Debuger import *
-from SandEngine.Physics.PhysicsEngine import update_materials
+from SandEngine.Physics.PhysicsEngine import update_materials , activate_world
 # root functions
 world = get_world()
 def visuals():
@@ -12,6 +12,7 @@ def visuals():
     handle_ui_buttons()
     pr.end_drawing()
 def physics():
+    activate_world(world)
     update_materials(world)
 def logics():
     handle_controls()
