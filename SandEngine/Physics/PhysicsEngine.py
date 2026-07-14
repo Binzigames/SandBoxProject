@@ -1,8 +1,6 @@
 # MATERIAL PHYSICS
 # handles sand, water and other tile behaviors
-
-from random import randint
-
+from SandEngine.Libs import *
 
 # ===== MATERIAL IDS =====
 
@@ -39,52 +37,79 @@ def swap(world, x1, y1, x2, y2):
 
 def update_sand(world, x, y):
 
-    # falling down
-    if world[y + 1][x] == AIR:
-        swap(world, x, y, x, y + 1)
+    row = world[y]
+    below = world[y + 1]
+
+    if below[x] == AIR:
+        below[x] = row[x]
+        row[x] = AIR
         return
 
+    direction = -1 if random.getrandbits(1) else 1
 
-    # diagonal movement
-    direction = -1 if randint(0, 1) else 1
+    if direction == -1:
 
-
-    for dx in (direction, -direction):
-
-        nx = x + dx
-
-        if inside(nx, y + 1):
-
-            target = world[y + 1][nx]
-
-            if target == AIR or target == WATER:
-
-                swap(world, x, y, nx, y + 1)
+        if x > 0:
+            if below[x - 1] == AIR or below[x - 1] == WATER:
+                below[x - 1], row[x] = row[x], below[x - 1]
                 return
 
+        if x < MAP_W - 1:
+            if below[x + 1] == AIR or below[x + 1] == WATER:
+                below[x + 1], row[x] = row[x], below[x + 1]
+                return
 
+    else:
+
+        if x < MAP_W - 1:
+            if below[x + 1] == AIR or below[x + 1] == WATER:
+                below[x + 1], row[x] = row[x], below[x + 1]
+                return
+
+        if x > 0:
+            if below[x - 1] == AIR or below[x - 1] == WATER:
+                below[x - 1], row[x] = row[x], below[x - 1]
+                return
 
 # ===== WATER =====
 
 def update_water(world, x, y):
 
-    # вниз
-    if inside(x, y + 1) and world[y + 1][x] == AIR:
-        swap(world, x, y, x, y + 1)
+    row = world[y]
+    below = world[y + 1]
+
+    if below[x] == AIR:
+        below[x] = WATER
+        row[x] = AIR
         return
 
-    direction = -1 if randint(0, 1) else 1
+    direction = -1 if random.getrandbits(1) else 1
 
     # діагональ вниз
-    for dx in (direction, -direction):
+    if direction == -1:
 
-        nx = x + dx
-
-        if inside(nx, y + 1) and world[y + 1][nx] == AIR:
-            swap(world, x, y, nx, y + 1)
+        if x > 0 and below[x - 1] == AIR:
+            below[x - 1] = WATER
+            row[x] = AIR
             return
 
-    # шукати шлях убік
+        if x < MAP_W - 1 and below[x + 1] == AIR:
+            below[x + 1] = WATER
+            row[x] = AIR
+            return
+
+    else:
+
+        if x < MAP_W - 1 and below[x + 1] == AIR:
+            below[x + 1] = WATER
+            row[x] = AIR
+            return
+
+        if x > 0 and below[x - 1] == AIR:
+            below[x - 1] = WATER
+            row[x] = AIR
+            return
+
     MAX_FLOW = 2
 
     for dx in (direction, -direction):
@@ -93,54 +118,45 @@ def update_water(world, x, y):
 
             nx = x + dx * dist
 
-            if not inside(nx, y):
+            if nx < 0 or nx >= MAP_W:
                 break
 
-            # стіна
-            if world[y][nx] != AIR:
+            if row[nx] != AIR:
                 break
 
-            # знайшли місце, де можна впасти
-            if inside(nx, y + 1) and world[y + 1][nx] == AIR:
-                swap(world, x, y, nx, y)
+            if below[nx] == AIR:
+                row[nx] = WATER
+                row[x] = AIR
                 return
 
-        # якщо просто є вільне місце поруч
         nx = x + dx
 
-        if inside(nx, y) and world[y][nx] == AIR:
-            swap(world, x, y, nx, y)
+        if 0 <= nx < MAP_W and row[nx] == AIR:
+            row[nx] = WATER
+            row[x] = AIR
             return
-
 
 # ===== MAIN UPDATE =====
 
 def update_materials(world):
 
-    # bottom to top update
-    # prevents double movement
-
     for y in range(MAP_H - 2, -1, -1):
 
-        # randomize horizontal order
-        start = randint(0, MAP_W - 1)
+        start = random.randint(0, MAP_W - 1)
 
+        x = start
 
-        for i in range(MAP_W):
-
-            x = (start + i) % MAP_W
+        for _ in range(MAP_W):
 
             tile = world[y][x]
 
-
-            if tile == SAND:
-
-                update_sand(world, x, y)
-
-
-            elif tile == WATER:
-
+            if tile == WATER:
                 update_water(world, x, y)
 
-            elif tile == GRAVIY:
+            elif tile == SAND or tile == GRAVIY:
                 update_sand(world, x, y)
+
+            x += 1
+
+            if x == MAP_W:
+                x = 0
