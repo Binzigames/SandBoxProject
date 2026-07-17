@@ -548,6 +548,13 @@ def draw_ui():
                 22,
                 pr.GREEN
             )
+            pr.draw_text(
+                "RPESS MMB TO SPAWN",
+                35,
+                400,
+                22,
+                pr.GREEN
+            )
 
             y = 230
 
@@ -567,7 +574,7 @@ def draw_ui():
                 )
 
                 if pr.is_mouse_button_pressed(
-                        pr.MouseButton.MOUSE_BUTTON_LEFT
+                        pr.MouseButton.MOUSE_BUTTON_RIGHT
                 ):
 
                     if (
@@ -595,7 +602,7 @@ def draw_ui():
             )
 
             if pr.is_mouse_button_pressed(
-                    pr.MouseButton.MOUSE_BUTTON_LEFT
+                    pr.MouseButton.MOUSE_BUTTON_MIDDLE
             ):
                 obj = GameObject(
                     world_mouse.x,
