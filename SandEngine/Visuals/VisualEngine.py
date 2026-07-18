@@ -7,6 +7,10 @@ from SandEngine.Debuger import *
 from SandEngine.Visuals.Materials import *
 from SandEngine.Physics.objects import *
 from SandEngine.Physics.PhysicsEngine import *
+#=====================
+#options
+#=====================
+
 #camera
 camera = pr.Camera2D()
 
@@ -15,7 +19,35 @@ camera.offset = pr.Vector2(0, 0)
 camera.rotation = 0.0
 camera.zoom = 1.0
 
-# ===== MAP =====
+# optimization settings
+map_texture = None
+map_image = None
+
+# UI
+Welcome_screen_shown = False
+debug_menu = False
+object_menu = False
+object_mode = False
+
+selected_object = "BOX"
+
+OBJECTS = {
+    "BOX": {
+        "color": pr.RED,
+        "size": (20,20)
+    },
+
+    "STONE BOX": {
+        "color": pr.GRAY,
+        "size": (35,35)
+    },
+
+    "BALL": {
+        "color": pr.BLUE,
+        "size": (25,25)
+    }
+}
+#map options
 MAP_W = 256
 MAP_H = 256
 PIXEL_SIZE = 4
@@ -24,6 +56,10 @@ MAP_PATH = "SandEngine/DATA/map.json"
 
 world = None
 
+
+#=====================
+# map functions
+#=====================
 def load_map():
     global world
 
@@ -76,11 +112,22 @@ def save_map():
         json.dump(world, f)
     print_message("Saving map...", 0)
 
+def draw_map():
+    global map_texture
 
-map_texture = None
-map_image = None
+    if map_texture is None:
+        create_map_texture()
 
+    pr.draw_texture(
+        map_texture,
+        0,
+        0,
+        pr.WHITE
+    )
 
+#=====================
+# map texture and  optimize stuff
+#=====================
 def create_map_texture():
     global world, map_texture, map_image
 
@@ -171,6 +218,10 @@ def update_cell_texture(x, y):
         map_image.data
     )
 
+#=====================
+# dirty textures
+#=====================
+
 def update_dirty_texture():
 
     cells = get_dirty_cells()
@@ -218,19 +269,10 @@ def update_dirty_texture():
     )
 
 
-def draw_map():
-    global map_texture
+#=====================
+# world edit stuff
+#=====================
 
-    if map_texture is None:
-        create_map_texture()
-
-    pr.draw_texture(
-        map_texture,
-        0,
-        0,
-        pr.WHITE
-    )
-# WORLD EDIT
 
 def get_world():
 
@@ -298,30 +340,11 @@ def get_wheel_rotation():
     TMP_cursor_scale = max(0.1, min(TMP_cursor_scale, 20.0))
     
     return TMP_cursor_scale
+
+#=====================
 #its "UI" my honey
-Welcome_screen_shown = False
-debug_menu = False
-object_menu = False
-object_mode = False
+#=====================
 
-selected_object = "BOX"
-
-OBJECTS = {
-    "BOX": {
-        "color": pr.RED,
-        "size": (20,20)
-    },
-
-    "STONE BOX": {
-        "color": pr.GRAY,
-        "size": (35,35)
-    },
-
-    "BALL": {
-        "color": pr.BLUE,
-        "size": (25,25)
-    }
-}
 def draw_ui():
     global Welcome_screen_shown , debug_menu , object_mode , selected_object , object_menu
     mouse = pr.get_mouse_position()
@@ -594,8 +617,9 @@ def draw_ui():
         debug_menu = not debug_menu
 
 
-
-# drawer function
+#=====================
+# root
+#=====================
 def visuals_root():
 
     global camera

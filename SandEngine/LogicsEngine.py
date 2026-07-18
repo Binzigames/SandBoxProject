@@ -4,9 +4,16 @@ from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Visuals.VisualEngine import *
 from SandEngine.Debuger import *
-
+#=====================
+# options
+#=====================
 Curent_material = 2
 Fullscreen = False
+
+#=====================
+#controls system
+#=====================
+
 def handle_controls():
     global Curent_material, Fullscreen
 
@@ -62,6 +69,9 @@ def handle_controls():
         if not Fullscreen:
             pr.set_window_size(800, 900)
 
+#=====================
+# down-screen menu
+#=====================
 
 def handle_ui_buttons():
     global Curent_material , world
@@ -70,7 +80,6 @@ def handle_ui_buttons():
     button_height = 45
     spacing = 15
 
-    # RETRO PANEL
     panel_height = 75
 
     panel = pr.Rectangle(

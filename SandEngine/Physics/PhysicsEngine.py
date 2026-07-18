@@ -107,7 +107,6 @@ def update_sand(world,x,y):
 
 
 
-    # вниз
 
     if y + 1 < MAP_H:
 
