@@ -387,18 +387,10 @@ def draw_object_mode_panel():
     )
 
 
-    objects = [
-        "SAND",
-        "WATER",
-        "WALL",
-        "GRAVITY"
-    ]
-
-
     y = panel.y + 45
 
 
-    for obj in objects:
+    for obj in OBJECTS:
 
         object_select_button(
             obj,
@@ -454,7 +446,7 @@ def panel_ui(rect, title=None):
         0.1,
         3,
         2,
-        pr.GREEN
+        UI_C_MAIN
     )
 
     if title:
@@ -463,7 +455,7 @@ def panel_ui(rect, title=None):
             int(rect.y),
             int(rect.width),
             28,
-            pr.GREEN
+            UI_C_MAIN
         )
 
         pr.draw_text(
@@ -497,16 +489,14 @@ def draw_ui():
             "Simverra",
             80,
             180,
-            42,
-            pr.GREEN
+            42
         )
 
         ui_text(
             "PHYSICS SANDBOX v1.0 / developed by : @porko_dev , @krakenschwester",
             80,
             235,
-            22,
-            pr.DARKGREEN
+            22
         )
 
         if int(pr.get_time() * 2) % 2:
@@ -514,24 +504,21 @@ def draw_ui():
                 "PRESS LEFT MOUSE BUTTON TO START",
                 80,
                 320,
-                22,
-                pr.GREEN
+                22
             )
 
         ui_text(
             "LMB  CREATE OBJECT",
             80,
             380,
-            18,
-            pr.DARKGREEN
+            18
         )
 
         ui_text(
             "RMB  DELETE OBJECT",
             80,
             405,
-            18,
-            pr.DARKGREEN
+            18
         )
 
         ui_text(
@@ -539,7 +526,6 @@ def draw_ui():
             80,
             450,
             18,
-            pr.DARKGREEN
         )
 
         if pr.is_mouse_button_down(
@@ -579,8 +565,7 @@ def draw_ui():
                 line,
                 panel.x + 12,
                 y,
-                18,
-                pr.GREEN
+                18
             )
 
             y += 22
@@ -590,8 +575,7 @@ def draw_ui():
                 "_",
                 panel.x + 12,
                 y + 5,
-                18,
-                pr.GREEN
+                18
             )
 
 
@@ -612,8 +596,7 @@ def draw_ui():
             "Simverra v1.0",
             28,
             28,
-            20,
-            pr.GREEN
+            20
         )
         # =========================
         # OBJECT SPAWN SYSTEM

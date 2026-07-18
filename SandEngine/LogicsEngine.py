@@ -206,9 +206,8 @@ def handle_ui_buttons():
         button_height
     )
 
-
     Button(
         reset_rect,
         "RESET MAP",
-        pr.Color(10,5,5,255),
+        reset_map
     )
