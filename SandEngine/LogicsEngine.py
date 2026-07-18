@@ -64,7 +64,7 @@ def handle_controls():
 
 
 def handle_ui_buttons():
-    global Curent_material
+    global Curent_material , world
 
     button_width = 150
     button_height = 45
@@ -247,7 +247,7 @@ def handle_ui_buttons():
 
 
     pr.draw_text(
-        "[R] RESET MAP",
+        "RESET MAP",
         int(reset_rect.x+18),
         int(reset_rect.y+12),
         18,
@@ -258,5 +258,7 @@ def handle_ui_buttons():
     if hovered and pr.is_mouse_button_pressed(
         pr.MouseButton.MOUSE_BUTTON_LEFT
     ):
-        load_map()
+        world =  load_map_return()
+        activate_world(world)
         create_map_texture()
+

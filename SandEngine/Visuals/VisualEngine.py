@@ -45,6 +45,29 @@ def load_map():
         with open(MAP_PATH, "r") as f:
             world = json.load(f)
 
+def load_map_return():
+    global world
+
+    os.makedirs("SandEngine/DATA", exist_ok=True)
+
+    if not os.path.exists(MAP_PATH):
+
+        world = [[0 for x in range(MAP_W)] for y in range(MAP_H)]
+
+        for y in range(MAP_H // 2, MAP_H):
+            for x in range(MAP_W):
+                world[y][x] = 4
+
+        save_map()
+        print_message("Loading map...", 0)
+        return world
+
+    else:
+
+        with open(MAP_PATH, "r") as f:
+            world = json.load(f)
+            return world
+
 
 def save_map():
     global world
@@ -299,48 +322,6 @@ OBJECTS = {
         "size": (25,25)
     }
 }
-def update_materials():
-    global world, map_texture, map_image
-
-    if world is None:
-        return
-
-    for y, row in enumerate(world):
-        for x, cell in enumerate(row):
-
-            if cell == 0:
-                continue
-
-            color = pr.BROWN
-
-            if cell == 2:
-                color = M_Sand(color, x, y)
-
-            elif cell == 3:
-                color = M_Water(pr.BLUE, x, y, world)
-
-            elif cell == 4:
-                color = M_Wall(pr.GRAY, x, y)
-
-            elif cell == 5:
-                color = M_graviy(pr.GRAY, x, y)
-
-
-            for py in range(PIXEL_SIZE):
-                for px in range(PIXEL_SIZE):
-
-                    pr.image_draw_pixel(
-                        map_image,
-                        x * PIXEL_SIZE + px,
-                        y * PIXEL_SIZE + py,
-                        color
-                    )
-
-    if map_texture:
-        pr.update_texture(
-            map_texture,
-            map_image.data
-        )
 def draw_ui():
     global Welcome_screen_shown , debug_menu , object_mode , selected_object , object_menu
     mouse = pr.get_mouse_position()
@@ -354,7 +335,7 @@ def draw_ui():
         )
     if not  Welcome_screen_shown:
         pr.draw_text(
-            "SIMULATED BOX",
+            "Simverra",
             80,
             180,
             42,
@@ -362,7 +343,7 @@ def draw_ui():
         )
 
         pr.draw_text(
-            "PHYSICS SANDBOX v1.0",
+            "PHYSICS SANDBOX v1.0 / developed by : @porko_dev , @krakenschwester",
             80,
             235,
             22,
@@ -390,6 +371,13 @@ def draw_ui():
             "RMB  DELETE OBJECT",
             80,
             405,
+            18,
+            pr.DARKGREEN
+        )
+        pr.draw_text(
+            "POWERED BY SAND ENGINE...",
+            80,
+            450,
             18,
             pr.DARKGREEN
         )
@@ -460,17 +448,10 @@ def draw_ui():
         pr.draw_rectangle_rounded_lines_ex(panel, 0.1, 3, 2, pr.GREEN)
 
         pr.draw_text(
-            "SIMULATED BOX v1.0",
+            "Simverra v1.0",
             28,
             28,
             20,
-            pr.GREEN
-        )
-        pr.draw_text(
-            f"FPS : {pr.get_fps()}",
-            28,
-            75,
-            18,
             pr.GREEN
         )
         # =========================

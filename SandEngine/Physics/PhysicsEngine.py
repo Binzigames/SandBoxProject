@@ -255,7 +255,7 @@ def update_water(world,x,y):
 
 
 # ===== MAIN UPDATE =====
-MAX_MATERIAL_UPDATES = 3000
+MAX_MATERIAL_UPDATES = 10000
 def update_materials(world):
     global active_cells
 
@@ -294,14 +294,12 @@ def update_materials(world):
 # ===== INITIALIZE MATERIAL =====
 
 def activate_world(world):
+    global active_cells, dirty_cells
+
+    active_cells.clear()
+    dirty_cells.clear()
 
     for y in range(MAP_H):
-
         for x in range(MAP_W):
-
-            if world[y][x] in (
-                SAND,
-                WATER,
-                GRAVIY
-            ):
-                activate(x,y)
+            if world[y][x] in (SAND, WATER, GRAVIY):
+                activate(x, y)
