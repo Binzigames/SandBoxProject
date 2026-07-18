@@ -39,12 +39,12 @@ def load_map():
                 world[y][x] = 4
 
         save_map()
-        print_message("Loading map...", 0)
-
+        print_message("map loaded", 0)
     else:
 
         with open(MAP_PATH, "r") as f:
             world = json.load(f)
+            print_message("Map opened", 0)
 
 def load_map_return():
     global world
@@ -60,7 +60,7 @@ def load_map_return():
                 world[y][x] = 4
 
         save_map()
-        print_message("Loading map...", 0)
+        print_message("Loading map with return...", 0)
         return world
 
     else:
@@ -75,7 +75,7 @@ def save_map():
 
     with open(MAP_PATH, "w") as f:
         json.dump(world, f)
-    print_message("Saving map...", 0)
+    print_message("map was saved", 0)
 
 def draw_map():
     global map_texture
@@ -111,6 +111,7 @@ def create_map_texture():
     update_map_texture()
 
     map_texture = pr.load_texture_from_image(map_image)
+    print_message("Map was created", 0)
 
 
 def update_map_texture():
@@ -259,12 +260,13 @@ def world_set(x,y,material=1):
 
         if map_texture:
             update_cell_texture(x,y)
+            print_message(f"set material on {x} , {y}", 2)
 
 def world_erase(x, y):
     global world
     world_set(x, y, 0)
     update_materials(world)
-    print_message(f"assassinated on {x} , {y}", 2)
+    print_message(f"assassinated material on {x} , {y}", 2)
 
 
 def world_get(x, y):

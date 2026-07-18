@@ -24,6 +24,7 @@ def print_message(message, Type=0):
 
 
 def print_init():
+    os.system('cls' if os.name == 'nt' else 'clear')
     print("==================================" + c.Fore.GREEN)
     print("SAND ENGINE LOADED / WELCOME" + c.Fore.WHITE)
     print("Nice to see you! your log is here:" )
