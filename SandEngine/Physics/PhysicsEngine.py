@@ -2,27 +2,8 @@
 # optimized sand/water physics
 
 from SandEngine.Libs import *
+from SandEngine.DATA.GameConfig import *
 
-
-# ===== MATERIAL IDS =====
-
-AIR = 0
-SAND = 2
-WATER = 3
-STONE = 4
-GRAVIY = 5
-
-
-# ===== MAP SIZE =====
-
-MAP_W = 256
-MAP_H = 256
-
-
-
-# ===== DIRTY PIXELS =====
-
-dirty_cells = set()
 
 
 def mark_dirty(x, y):
@@ -254,7 +235,6 @@ def update_water(world,x,y):
 
 
 # ===== MAIN UPDATE =====
-MAX_MATERIAL_UPDATES = 10000
 def update_materials(world):
     global active_cells
 

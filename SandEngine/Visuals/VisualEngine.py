@@ -7,8 +7,10 @@ from SandEngine.Debuger import *
 from SandEngine.Visuals.Materials import *
 from SandEngine.Physics.objects import *
 from SandEngine.Physics.PhysicsEngine import *
+from SandEngine.DATA.GameConfig import *
+
 #=====================
-#options
+#camera
 #=====================
 
 #camera
@@ -18,43 +20,6 @@ camera.target = pr.Vector2(0, 0)
 camera.offset = pr.Vector2(0, 0)
 camera.rotation = 0.0
 camera.zoom = 1.0
-
-# optimization settings
-map_texture = None
-map_image = None
-
-# UI
-Welcome_screen_shown = False
-debug_menu = False
-object_menu = False
-object_mode = False
-
-selected_object = "BOX"
-
-OBJECTS = {
-    "BOX": {
-        "color": pr.RED,
-        "size": (20,20)
-    },
-
-    "STONE BOX": {
-        "color": pr.GRAY,
-        "size": (35,35)
-    },
-
-    "BALL": {
-        "color": pr.BLUE,
-        "size": (25,25)
-    }
-}
-#map options
-MAP_W = 256
-MAP_H = 256
-PIXEL_SIZE = 4
-
-MAP_PATH = "SandEngine/DATA/map.json"
-
-world = None
 
 
 #=====================

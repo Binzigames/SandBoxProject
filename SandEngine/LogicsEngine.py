@@ -4,11 +4,7 @@ from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Visuals.VisualEngine import *
 from SandEngine.Debuger import *
-#=====================
-# options
-#=====================
-Curent_material = 2
-Fullscreen = False
+from SandEngine.DATA.GameConfig import *
 
 #=====================
 #controls system
