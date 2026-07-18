@@ -3,6 +3,7 @@
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
 from SandEngine.Visuals.VisualEngine import *
+from SandEngine.Physics.objects import *
 from SandEngine.Debuger import *
 from SandEngine.DATA.GameConfig import *
 
@@ -263,7 +264,9 @@ def handle_ui_buttons():
     if hovered and pr.is_mouse_button_pressed(
         pr.MouseButton.MOUSE_BUTTON_LEFT
     ):
+
         world =  load_map_return()
         activate_world(world)
         create_map_texture()
+        clear_all_objects()
 

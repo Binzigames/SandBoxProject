@@ -1,13 +1,11 @@
-import pyray as pr
-import random
-
+#Here is phys objects logis
+#importing for you honey UwU
 from SandEngine.Physics.PhysicsEngine import *
+from SandEngine.DATA.GameConfig import *
 
-
-objects = []
-
-GRAVITY = 600
-
+#=====================
+#solid material list
+#=====================
 
 SOLID_MATERIALS = (
     STONE,
@@ -15,12 +13,13 @@ SOLID_MATERIALS = (
     GRAVIY
 )
 
-
+#=====================
+#game object class
+#=====================
 
 class GameObject:
 
     def __init__(self, x, y, w=16, h=16, color=pr.RED):
-
         self.x = x
         self.y = y
 
@@ -36,6 +35,18 @@ class GameObject:
 
         self.alive = True
 
+    def rect(self):
+        return pr.Rectangle(
+            self.x,
+            self.y,
+            self.w,
+            self.h
+        )
+
+    def destroy(self):
+        self.alive = False
+        if self in objects:
+            objects.remove(self)
 
     def rect(self):
 
@@ -46,26 +57,9 @@ class GameObject:
             self.h
         )
 
-
-
-
-def spawn_object(x,y):
-
-    obj = GameObject(
-        x,
-        y,
-        20,
-        20,
-        pr.RED
-    )
-
-    objects.append(obj)
-
-    return obj
-
-
-
-
+#=====================
+#collisions and move
+#=====================
 
 def rect_solid(world,x,y,w,h):
 
@@ -99,11 +93,6 @@ def rect_solid(world,x,y,w,h):
 
 
     return False
-
-
-
-
-
 
 def move_x(world,obj,amount):
 
@@ -204,10 +193,45 @@ def object_inside_cells(obj):
     return left,right,top,bottom
 
 
+#=====================
+#manipulations with objects
+#=====================
+
+def spawn_object(x,y):
+
+    obj = GameObject(
+        x,
+        y,
+        20,
+        20,
+        pr.RED
+    )
+
+    objects.append(obj)
+
+    return obj
 
 
 
+def clear_all_objects():
+    for obj in objects:
+        obj.destroy()
 
+
+
+def draw_objects():
+
+    for obj in objects:
+
+        pr.draw_rectangle_rec(
+            obj.rect(),
+            obj.color
+        )
+
+
+#=====================
+#push and updates
+#=====================
 
 def update_objects(world,dt):
 
@@ -489,15 +513,3 @@ def push_object_materials(world,obj,objects):
 
 
 
-
-
-
-
-def draw_objects():
-
-    for obj in objects:
-
-        pr.draw_rectangle_rec(
-            obj.rect(),
-            obj.color
-        )

@@ -20,7 +20,10 @@ def print_message(message, Type=0):
         print("==================================" + c.Fore.WHITE)
 
     else:
-        print("Unknown debug type")
+        if d_show_logs:
+            print("Unknown debug type")
+        else:
+            pass
 
 
 def print_init():

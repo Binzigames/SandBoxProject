@@ -82,3 +82,12 @@ dirty_cells = set()
 
 # optimization
 MAX_MATERIAL_UPDATES = 10000
+
+#=====================
+#OBJECTS
+#=====================
+objects = []
+
+GRAVITY = 600
+
+
