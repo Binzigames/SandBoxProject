@@ -1,6 +1,6 @@
 #IMPORTING SASSY LIBS
 from SandEngine.Libs import *
-from SandEngine.Visuals.VisualEngine import visuals_root , get_world
+from SandEngine.Visuals.VisualEngine import visuals_root , get_world , draw_loading_screen
 from SandEngine.LogicsEngine import handle_controls , handle_ui_buttons
 from SandEngine.Debuger import *
 from SandEngine.Physics.PhysicsEngine import update_materials , activate_world
@@ -28,9 +28,17 @@ def exit():
 #=====================
 
 def init_root():
-    pr.init_window( w_x , w_y , w_title)
+    pr.init_window(w_x, w_y, w_title)
     print_init()
     pr.set_target_fps(w_fps_lock)
+
+    pr.begin_drawing()
+    draw_loading_screen()
+    pr.end_drawing()
+
+    activate_world(get_world())
+    update_materials(get_world())
+
     while not pr.window_should_close():
         root()
     else:

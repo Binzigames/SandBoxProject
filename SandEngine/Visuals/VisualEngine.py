@@ -1,5 +1,6 @@
 # VISUAL ENGINE DRAWS SOME SHIT ON SCREEN
 #importing for you honey ~
+import time
 
 from SandEngine.Libs import *
 from SandEngine.DATA.TMP import *
@@ -308,6 +309,12 @@ def get_wheel_rotation():
     TMP_cursor_scale = max(0.1, min(TMP_cursor_scale, 20.0))
     
     return TMP_cursor_scale
+
+
+
+
+
+
 
 #=====================
 #its "UI" my honey
@@ -910,6 +917,77 @@ def draw_ui():
     if pr.is_key_pressed(
             pr.KeyboardKey.KEY_TAB):
         debug_menu = not debug_menu
+
+
+
+#=====================
+#loading srcreen
+#=====================
+def draw_loading_screen():
+    M_Background()
+    quote = loading_texts[
+        int((pr.get_time() // 3000) % len(loading_texts))
+    ]
+    sw = pr.get_screen_width()
+    sh = pr.get_screen_height()
+
+    panel = pr.Rectangle(
+        sw / 2 - 310,
+        sh / 2 - 180,
+        620,
+        360
+    )
+
+    panel_ui(panel)
+
+    ui_text(
+        "Simverra",
+        panel.x + 40,
+        panel.y + 45,
+        54,
+        UI_C_TEXT
+    )
+
+    ui_text(
+        "Physics Sandbox / all rights reserved!",
+        panel.x + 42,
+        panel.y + 105,
+        22,
+        UI_C_MUTED
+    )
+
+    ui_text(
+        "Powered by Sand Engine",
+        panel.x + 42,
+        panel.y + 140,
+        18,
+        UI_C_MAIN
+    )
+    ui_text(
+        quote,
+        panel.x + 42,
+        panel.y + 167,
+        18,
+        UI_C_MAIN
+    )
+
+    pr.draw_line(
+        int(panel.x + 40),
+        int(panel.y + 190),
+        int(panel.x + panel.width - 40),
+        int(panel.y + 190),
+        UI_C_BORDER
+    )
+    ui_text(
+        "loading you sandbox...",
+        panel.x + 42,
+        panel.y + 310,
+        22,
+        UI_C_ACCENT
+     )
+
+
+
 #=====================
 # root
 #=====================

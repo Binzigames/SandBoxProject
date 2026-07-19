@@ -27,6 +27,22 @@ w_title = "Simverra 1.0"
 #debuger
 d_show_logs = False
 
+
+# loading screen
+loading_texts = [
+    "The night is young, the stars are watching",
+    "Lost somewhere between dreams and reality",
+    "Creating a world you will remember",
+    "The silence before the adventure begins",
+    "Chasing shadows, building memories",
+    "Somewhere far away, a story is waiting",
+    "Turning pixels into emotions",
+    "The journey starts with a single step",
+    "Loading the impossible...",
+    "Almost there, don't blink"
+]
+
+
 #=====================
 #VISUAL ENGINE
 #=====================
