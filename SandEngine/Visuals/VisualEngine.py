@@ -463,7 +463,7 @@ def object_select_button(name, x, y):
             pr.Color(255,255,255,18)
         )
 
-    icon = "▶" if selected else "•"
+    icon = ">" if selected else "*"
 
     ui_text(
         f"{icon} {name.title()}",
@@ -503,7 +503,7 @@ def draw_object_mode_panel():
 
     panel_ui(
         panel,
-        " OBJECT SELECT >"
+        "OBJECT SELECT"
     )
 
 

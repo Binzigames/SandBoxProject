@@ -9,15 +9,14 @@ from SandEngine.DATA.GameConfig import *
 #=====================
 # root layers
 #=====================
-world = get_world()
 def visuals():
     pr.begin_drawing()
     visuals_root()
     handle_ui_buttons()
     pr.end_drawing()
 def physics():
-    activate_world(world)
-    update_materials(world)
+    activate_world(get_world())
+    update_materials(get_world())
 def logics():
     handle_controls()
 def exit():
