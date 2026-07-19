@@ -339,7 +339,6 @@ def ui_text(text, x, y, size=24, color=UI_C_TEXT):
 
 #buttons
 def Button(rect, text, action=None):
-
     global is_hovered
 
     mouse = pr.get_mouse_position()
@@ -349,20 +348,20 @@ def Button(rect, text, action=None):
         rect
     )
 
+    if hovered:
+        is_hovered = True
+
     color = UI_C_BG
 
     if hovered:
         color = pr.Color(58, 63, 72, 255)
-        is_hovered = True
-    else:
-        is_hovered = False
 
-    if hovered and pr.is_mouse_button_down(
-        pr.MouseButton.MOUSE_BUTTON_LEFT
-    ):
-        color = UI_C_MAIN
+        if pr.is_mouse_button_down(
+            pr.MouseButton.MOUSE_BUTTON_LEFT
+        ):
+            color = UI_C_MAIN
 
-    # Shadow
+
     shadow = pr.Rectangle(
         rect.x,
         rect.y + 3,
@@ -377,13 +376,14 @@ def Button(rect, text, action=None):
         pr.Color(0,0,0,60)
     )
 
-    # Button
+
     pr.draw_rectangle_rounded(
         rect,
         0.35,
         8,
         color
     )
+
 
     pr.draw_rectangle_rounded_lines_ex(
         rect,
@@ -393,7 +393,8 @@ def Button(rect, text, action=None):
         UI_C_BORDER
     )
 
-    size = int(rect.height * .55)
+
+    size = int(rect.height * 0.55)
 
     tw = pr.measure_text_ex(
         get_font(),
@@ -402,12 +403,14 @@ def Button(rect, text, action=None):
         1
     ).x
 
+
     ui_text(
         text,
-        rect.x + (rect.width - tw)/2,
+        rect.x + (rect.width - tw) / 2,
         rect.y + (rect.height-size)/2,
         size
     )
+
 
     if hovered:
 
@@ -419,14 +422,15 @@ def Button(rect, text, action=None):
             UI_C_MAIN
         )
 
+
         if pr.is_mouse_button_pressed(
             pr.MouseButton.MOUSE_BUTTON_LEFT
         ):
+
             if action:
                 action()
 
 def object_select_button(name, x, y):
-
     global selected_object
 
     mouse = pr.get_mouse_position()
@@ -552,8 +556,21 @@ def object_select_button(name, x, y):
 
 # Panel
 def panel_ui(rect, title=None):
+    global is_hovered
 
-    # Shadow
+    mouse = pr.get_mouse_position()
+
+
+    hovered = pr.check_collision_point_rec(
+        mouse,
+        rect
+    )
+
+
+    if hovered:
+        is_hovered = True
+
+
     shadow = pr.Rectangle(
         rect.x + 5,
         rect.y + 5,
@@ -561,14 +578,15 @@ def panel_ui(rect, title=None):
         rect.height
     )
 
+
     pr.draw_rectangle_rounded(
         shadow,
         0.30,
         8,
-        pr.Color(0, 0, 0, 70)
+        pr.Color(0,0,0,70)
     )
 
-    # Background
+
     pr.draw_rectangle_rounded(
         rect,
         0.30,
@@ -576,7 +594,7 @@ def panel_ui(rect, title=None):
         UI_C_PANEL
     )
 
-    # Border
+
     pr.draw_rectangle_rounded_lines_ex(
         rect,
         0.30,
@@ -585,10 +603,11 @@ def panel_ui(rect, title=None):
         UI_C_BORDER
     )
 
+
     if title:
 
         ui_text(
-            "✦ " + title,
+            title,
             rect.x + 18,
             rect.y + 14,
             20,
@@ -655,8 +674,8 @@ def draw_cursor():
 
 # global ui draw
 def draw_ui():
-    global Welcome_screen_shown, debug_menu, object_mode
-
+    global Welcome_screen_shown, debug_menu, object_mode , is_hovered
+    is_hovered = False
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
 

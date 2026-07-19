@@ -45,7 +45,8 @@ def handle_controls():
                 if left and not get_mouse_hovery():
                     world_set(wx, wy, Curent_material)
                 else:
-                    world_set(wx, wy, 0)
+                    if not get_mouse_hovery():
+                        world_set(wx, wy, 0)
 
     if pr.is_key_pressed(pr.KeyboardKey.KEY_ONE):
         Curent_material = 2
