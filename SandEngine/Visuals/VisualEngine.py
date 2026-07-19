@@ -315,48 +315,168 @@ def get_wheel_rotation():
 is_hovered = False
 #widgets
 #text
-def ui_text(text, x, y, size=32, color=UI_C_TEXT, spacing=1):
+def ui_text(text, x, y, size=24, color=UI_C_TEXT):
+
+    # Shadow
+    pr.draw_text_ex(
+        get_font(),
+        str(text),
+        pr.Vector2(x + 1, y + 1),
+        float(size),
+        1,
+        pr.Color(0, 0, 0, 90)
+    )
+
+    # Text
     pr.draw_text_ex(
         get_font(),
         str(text),
         pr.Vector2(x, y),
         float(size),
-        float(spacing),
+        1,
         color
     )
 
 #buttons
-def Button(rect, text , action=None):
+def Button(rect, text, action=None):
+
     global is_hovered
 
     mouse = pr.get_mouse_position()
 
-    pr.draw_rectangle_rounded(rect, 0.2, 3, UI_C_BG)
+    hovered = pr.check_collision_point_rec(
+        mouse,
+        rect
+    )
 
-    text_size = int(rect.height * 0.6)
+    color = UI_C_BG
 
-    text_width = pr.measure_text_ex(
+    if hovered:
+        color = pr.Color(58, 63, 72, 255)
+        is_hovered = True
+    else:
+        is_hovered = False
+
+    if hovered and pr.is_mouse_button_down(
+        pr.MouseButton.MOUSE_BUTTON_LEFT
+    ):
+        color = UI_C_MAIN
+
+    # Shadow
+    shadow = pr.Rectangle(
+        rect.x,
+        rect.y + 3,
+        rect.width,
+        rect.height
+    )
+
+    pr.draw_rectangle_rounded(
+        shadow,
+        0.35,
+        8,
+        pr.Color(0,0,0,60)
+    )
+
+    # Button
+    pr.draw_rectangle_rounded(
+        rect,
+        0.35,
+        8,
+        color
+    )
+
+    pr.draw_rectangle_rounded_lines_ex(
+        rect,
+        0.35,
+        8,
+        1,
+        UI_C_BORDER
+    )
+
+    size = int(rect.height * .55)
+
+    tw = pr.measure_text_ex(
         get_font(),
         text,
-        float(text_size),
+        float(size),
         1
     ).x
 
-    text_x = rect.x + (rect.width - text_width) / 2
-    text_y = rect.y + (rect.height - text_size) / 2
+    ui_text(
+        text,
+        rect.x + (rect.width - tw)/2,
+        rect.y + (rect.height-size)/2,
+        size
+    )
 
-    ui_text(text, text_x, text_y, text_size, UI_C_TEXT)
+    if hovered:
 
-    if (rect.x <= mouse.x <= rect.x + rect.width and
-        rect.y <= mouse.y <= rect.y + rect.height):
+        pr.draw_rectangle_rounded_lines_ex(
+            rect,
+            0.35,
+            8,
+            2,
+            UI_C_MAIN
+        )
 
-        is_hovered = True
-
-        if pr.is_mouse_button_pressed(pr.MouseButton.MOUSE_BUTTON_LEFT):
+        if pr.is_mouse_button_pressed(
+            pr.MouseButton.MOUSE_BUTTON_LEFT
+        ):
             if action:
                 action()
-    else:
-        is_hovered = False
+
+def object_select_button(name, x, y):
+
+    global selected_object
+
+    mouse = pr.get_mouse_position()
+
+    rect = pr.Rectangle(
+        x,
+        y,
+        240,
+        28
+    )
+
+    hover = pr.check_collision_point_rec(
+        mouse,
+        rect
+    )
+
+    selected = name == selected_object
+
+    if selected:
+
+        pr.draw_rectangle_rounded(
+            rect,
+            0.4,
+            6,
+            pr.Color(60,90,140,180)
+        )
+
+    elif hover:
+
+        pr.draw_rectangle_rounded(
+            rect,
+            0.4,
+            6,
+            pr.Color(255,255,255,18)
+        )
+
+    icon = "▶" if selected else "•"
+
+    ui_text(
+        f"{icon} {name.title()}",
+        x + 10,
+        y + 5,
+        18,
+        UI_C_TEXT if selected else UI_C_MUTED
+    )
+
+    if hover and pr.is_mouse_button_pressed(
+        pr.MouseButton.MOUSE_BUTTON_LEFT
+    ):
+        selected_object = name
 
 def get_mouse_hovery():
     global is_hovered
@@ -432,39 +552,106 @@ def object_select_button(name, x, y):
 
 # Panel
 def panel_ui(rect, title=None):
-    bg = UI_C_BG
 
-    pr.draw_rectangle_rounded(
-        rect,
-        0.1,
-        3,
-        bg
+    # Shadow
+    shadow = pr.Rectangle(
+        rect.x + 5,
+        rect.y + 5,
+        rect.width,
+        rect.height
     )
 
+    pr.draw_rectangle_rounded(
+        shadow,
+        0.30,
+        8,
+        pr.Color(0, 0, 0, 70)
+    )
+
+    # Background
+    pr.draw_rectangle_rounded(
+        rect,
+        0.30,
+        8,
+        UI_C_PANEL
+    )
+
+    # Border
     pr.draw_rectangle_rounded_lines_ex(
         rect,
-        0.1,
-        3,
-        2,
-        UI_C_MAIN
+        0.30,
+        8,
+        1,
+        UI_C_BORDER
     )
 
     if title:
-        pr.draw_rectangle(
-            int(rect.x),
-            int(rect.y),
-            int(rect.width),
-            28,
-            UI_C_MAIN
+
+        ui_text(
+            "✦ " + title,
+            rect.x + 18,
+            rect.y + 14,
+            20,
+            UI_C_TEXT
         )
 
-        pr.draw_text(
-            title,
-            int(rect.x + 8),
-            int(rect.y + 6),
-            18,
-            pr.BLACK
+def draw_preview(world_mouse):
+
+    data = OBJECTS[selected_object]
+
+    pr.draw_rectangle(
+        int(world_mouse.x),
+        int(world_mouse.y),
+        data["size"][0],
+        data["size"][1],
+        pr.fade(
+            data["color"],
+            0.25
         )
+    )
+
+    pr.draw_rectangle_lines(
+        int(world_mouse.x),
+        int(world_mouse.y),
+        data["size"][0],
+        data["size"][1],
+        UI_C_ACCENT
+    )
+
+def draw_cursor():
+
+    mouse = pr.get_mouse_position()
+
+    world = pr.get_screen_to_world_2d(
+        mouse,
+        camera
+    )
+
+    r = max(
+        1,
+        min(int(get_wheel_rotation()),5)
+    ) * 5
+
+    pr.draw_circle(
+        int(world.x),
+        int(world.y),
+        2,
+        UI_C_ACCENT
+    )
+
+    pr.draw_circle_lines(
+        int(world.x),
+        int(world.y),
+        r,
+        UI_C_ACCENT
+    )
+
+    pr.draw_circle_lines(
+        int(world.x),
+        int(world.y),
+        r + 5,
+        pr.fade(UI_C_ACCENT,0.3)
+    )
 
 # global ui draw
 def draw_ui():
@@ -473,185 +660,237 @@ def draw_ui():
     mouse = pr.get_mouse_position()
     world_mouse = pr.get_screen_to_world_2d(mouse, camera)
 
-    # cursor
-    if not object_mode:
-        pr.draw_circle_lines(
-            int(world_mouse.x),
-            int(world_mouse.y),
-            max(1, min(int(get_wheel_rotation()), 5)) * 5,
-            pr.RAYWHITE
-        )
+    # ==========================
+    # CURSOR
+    # ==========================
 
-    # welcome screen
+    if not object_mode:
+        draw_cursor()
+
+    # ==========================
+    # WELCOME SCREEN
+    # ==========================
+
     if not Welcome_screen_shown:
 
-        ui_text(
-            "Simverra",
-            80,
-            180,
-            42
-        )
-
-        ui_text(
-            "PHYSICS SANDBOX v1.0 / developed by : @porko_dev , @krakenschwester",
-            80,
-            235,
-            22
-        )
-
-        if int(pr.get_time() * 2) % 2:
-            ui_text(
-                "PRESS LEFT MOUSE BUTTON TO START",
-                80,
-                320,
-                22
-            )
-
-        ui_text(
-            "LMB  CREATE OBJECT",
-            80,
-            380,
-            18
-        )
-
-        ui_text(
-            "RMB  DELETE OBJECT",
-            80,
-            405,
-            18
-        )
-
-        ui_text(
-            "POWERED BY SAND ENGINE...",
-            80,
-            450,
-            18,
-        )
-
-        if pr.is_mouse_button_down(
-                pr.MouseButton.MOUSE_BUTTON_LEFT
-        ):
-            Welcome_screen_shown = True
-
-
-
-    # debug
-    elif debug_menu:
+        sw = pr.get_screen_width()
+        sh = pr.get_screen_height()
 
         panel = pr.Rectangle(
-            pr.get_screen_width() - 340,
-            20,
-            320,
-            230
-        )
-
-        panel_ui(
-            panel,
-            " DEBUG TERMINAL "
-        )
-
-        mouse = pr.get_mouse_position()
-
-        info = [
-            f"FPS        : {pr.get_fps()}",
-            f"MOUSE X    : {int(mouse.x)}",
-            f"MOUSE Y    : {int(mouse.y)}"
-        ]
-
-        y = panel.y + 45
-
-        for line in info:
-            ui_text(
-                line,
-                panel.x + 12,
-                y,
-                18
-            )
-
-            y += 22
-
-        if int(pr.get_time() * 2) % 2:
-            ui_text(
-                "_",
-                panel.x + 12,
-                y + 5,
-                18
-            )
-
-
-
-    # normal ui
-    else:
-
-        panel = pr.Rectangle(
-            15,
-            15,
-            300,
-            90
+            sw / 2 - 310,
+            sh / 2 - 180,
+            620,
+            360
         )
 
         panel_ui(panel)
 
         ui_text(
-            "Simverra v1.0",
-            28,
-            28,
-            20
-        )
-        # =========================
-        # OBJECT SPAWN SYSTEM
-        # =========================
-
-        mouse = pr.get_mouse_position()
-
-        world_mouse = pr.get_screen_to_world_2d(
-            mouse,
-            camera
+            "Simverra",
+            panel.x + 40,
+            panel.y + 45,
+            54,
+            UI_C_TEXT
         )
 
-        # OBJECT MODE BUTTON
-
-        Button(
-            pr.Rectangle(20, 120, 170, 35),
-            "OBJECT MODE",
-            toggle_object_mode
+        ui_text(
+            "Physics Sandbox / all rights reserved!",
+            panel.x + 42,
+            panel.y + 105,
+            22,
+            UI_C_MUTED
         )
 
-        # OBJECT MENU
+        ui_text(
+            "Powered by Sand Engine",
+            panel.x + 42,
+            panel.y + 140,
+            18,
+            UI_C_MAIN
+        )
+        ui_text(
+            "developed by @Porko_dev(YK) , @Krakenschwester",
+            panel.x + 42,
+            panel.y + 167,
+            18,
+            UI_C_MAIN
+        )
 
-        if object_menu:
-            draw_object_mode_panel()
+        pr.draw_line(
+            int(panel.x + 40),
+            int(panel.y + 190),
+            int(panel.x + panel.width - 40),
+            int(panel.y + 190),
+            UI_C_BORDER
+        )
 
-        # PREVIEW CIRCLE
+        ui_text(
+            "LMB   Create Object",
+            panel.x + 42,
+            panel.y + 200,
+            18
+        )
 
-        if object_mode:
+        ui_text(
+            "RMB   Delete Object",
+            panel.x + 42,
+            panel.y + 228,
+            18
+        )
 
-            data = OBJECTS[selected_object]
+        ui_text(
+            "MMB   Spawn Selected Object",
+            panel.x + 42,
+            panel.y + 256,
+            18
+        )
 
-            pr.draw_rectangle_lines(
-                int(world_mouse.x),
-                int(world_mouse.y),
-                data["size"][0],
-                data["size"][1],
-                pr.YELLOW
+        if int(pr.get_time() * 2) % 2:
+
+            ui_text(
+                "Click anywhere to begin",
+                panel.x + 42,
+                panel.y + 310,
+                22,
+                UI_C_ACCENT
             )
 
-            if pr.is_mouse_button_pressed(
-                    pr.MouseButton.MOUSE_BUTTON_MIDDLE
-            ):
-                obj = GameObject(
-                    world_mouse.x,
-                    world_mouse.y,
-                    data["size"][0],
-                    data["size"][1],
-                    data["color"]
-                )
+        if pr.is_mouse_button_pressed(
+                pr.MouseButton.MOUSE_BUTTON_LEFT):
+            Welcome_screen_shown = True
 
-                objects.append(obj)
+        return
 
-    if pr.is_key_pressed(pr.KeyboardKey.KEY_TAB):
+    # ==========================
+    # DEBUG
+    # ==========================
+
+    if debug_menu:
+
+        panel = pr.Rectangle(
+            pr.get_screen_width() - 340,
+            20,
+            320,
+            210
+        )
+
+        panel_ui(
+            panel,
+            "Debug"
+        )
+
+        info = [
+
+            ("FPS", pr.get_fps()),
+            ("Mouse X", int(mouse.x)),
+            ("Mouse Y", int(mouse.y)),
+            ("Objects", len(objects)),
+            ("Zoom", round(camera.zoom, 2))
+
+        ]
+
+        y = panel.y + 48
+
+        for name, value in info:
+
+            ui_text(
+                f"{name:<10}",
+                panel.x + 18,
+                y,
+                18,
+                UI_C_MUTED
+            )
+
+            ui_text(
+                str(value),
+                panel.x + 170,
+                y,
+                18,
+                UI_C_TEXT
+            )
+
+            y += 26
+
+    # ==========================
+    # TOP BAR
+    # ==========================
+
+    panel = pr.Rectangle(
+        15,
+        15,
+        300,
+        90
+    )
+
+    panel_ui(panel)
+
+    ui_text(
+        "Simverra",
+        30,
+        30,
+        26
+    )
+
+    ui_text(
+        "Physics Sandbox",
+        30,
+        58,
+        16,
+        UI_C_MUTED
+    )
+
+    # ==========================
+    # TOOLBAR
+    # ==========================
+
+    Button(
+        pr.Rectangle(
+            20,
+            120,
+            180,
+            40
+        ),
+        "Object Mode",
+        toggle_object_mode
+    )
+
+    # ==========================
+    # OBJECT PANEL
+    # ==========================
+
+    if object_menu:
+        draw_object_mode_panel()
+
+    # ==========================
+    # PREVIEW
+    # ==========================
+
+    if object_mode:
+
+        draw_preview(world_mouse)
+
+        data = OBJECTS[selected_object]
+
+        if pr.is_mouse_button_pressed(
+                pr.MouseButton.MOUSE_BUTTON_MIDDLE):
+
+            obj = GameObject(
+                world_mouse.x,
+                world_mouse.y,
+                data["size"][0],
+                data["size"][1],
+                data["color"]
+            )
+
+            objects.append(obj)
+
+    # ==========================
+    # DEBUG TOGGLE
+    # ==========================
+
+    if pr.is_key_pressed(
+            pr.KeyboardKey.KEY_TAB):
         debug_menu = not debug_menu
-
 #=====================
 # root
 #=====================

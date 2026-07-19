@@ -7,10 +7,15 @@ from SandEngine.Libs import *
 #=====================
 
 #ui_colors
-UI_C_MAIN = pr.Color(225,225, 255 ,225)
-UI_C_SECONDARY = pr.Color(225, 225, 225,225)
-UI_C_BG = pr.Color(34, 34, 34,225)
-UI_C_TEXT = pr.Color(255, 42, 42,225)
+UI_C_BG      = pr.Color(38, 41, 48, 220)
+UI_C_PANEL   = pr.Color(48, 52, 60, 240)
+UI_C_BORDER  = pr.Color(72, 78, 90, 255)
+
+UI_C_TEXT    = pr.Color(236, 238, 244, 255)
+UI_C_MUTED   = pr.Color(170, 176, 188, 255)
+
+UI_C_MAIN    = pr.Color(120, 175, 255, 255)
+UI_C_ACCENT  = pr.Color(255, 210, 120, 255)
 
 
 #window
@@ -62,7 +67,6 @@ PIXEL_SIZE = 4
 MAP_PATH = "SandEngine/DATA/map.json"
 
 world = None
-
 
 #=====================
 #LOGICS ENGINE

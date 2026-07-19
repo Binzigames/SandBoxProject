@@ -7,6 +7,8 @@ from SandEngine.Physics.objects import *
 from SandEngine.Debuger import *
 from SandEngine.DATA.GameConfig import *
 
+
+
 #=====================
 #controls system
 #=====================
@@ -97,117 +99,197 @@ def reset_map():
     create_map_texture()
     clear_all_objects()
 
+#=====================
+#Groops tabs
+#=====================
+opened_group = None
 
+material_groups = {
+    "Physics": [
+        ("Sand", select_sand),
+        ("Water", select_water),
+    ],
 
+    "Not Physical": [
+        ("Wall", select_wall),
+    ],
+
+    "Special": [
+        ("Gravity", select_gravity),
+    ]
+}
 def handle_ui_buttons():
 
-    button_width = 150
-    button_height = 45
-    spacing = 15
+    global opened_group
 
-    panel_height = 75
+    sw = pr.get_screen_width()
+    sh = pr.get_screen_height()
+
+    margin = 20
+    gap = 8
 
 
-    panel = pr.Rectangle(
-        20,
-        pr.get_screen_height() - panel_height - 15,
-        pr.get_screen_width() - 40,
-        panel_height
+    # ==========================
+    # GROUP PANEL
+    # ==========================
+
+    clear_w = 120
+
+    group_panel = pr.Rectangle(
+        margin,
+        sh - 60,
+        sw - margin * 2 - clear_w - 15,
+        40
     )
 
 
-    # PANEL
-    panel_ui(
-        panel,
-        " MATERIAL SELECT >"
-    )
+    panel_ui(group_panel)
 
 
-    y = panel.y + 28
+    groups = list(material_groups.keys())
 
 
-
-    buttons = [
-
-        (
-            pr.Rectangle(
-                50,
-                y,
-                button_width,
-                button_height
-            ),
-            "[1] SAND",
-            pr.Color(210,180,70,255),
-            pr.Color(20,20,20,255),
-            select_sand
-        ),
+    group_w = (
+        group_panel.width - 20 - gap * (len(groups)-1)
+    ) / len(groups)
 
 
-        (
-            pr.Rectangle(
-                50 + button_width + spacing,
-                y,
-                button_width,
-                button_height
-            ),
-            "[2] WATER",
-            pr.Color(50,140,220,255),
-            pr.Color(20,20,20,255),
-            select_water
-        ),
+    x = group_panel.x + 10
 
 
-        (
-            pr.Rectangle(
-                50 + (button_width + spacing) * 2,
-                y,
-                button_width,
-                button_height
-            ),
-            "[3] WALL",
-            pr.Color(120,120,120,255),
-            pr.Color(20,20,20,255),
-            select_wall
-        ),
+    for group in groups:
 
 
-        (
-            pr.Rectangle(
-                50 + (button_width + spacing) * 3,
-                y,
-                button_width,
-                button_height
-            ),
-            "[4] GRAVITY",
-            pr.Color(100,100,100,255),
-            pr.Color(20,20,20,255),
-            select_gravity
-        )
+        def choose(g=group):
 
-    ]
+            global opened_group
 
+            if opened_group == g:
+                opened_group = None
+            else:
+                opened_group = g
 
-    for rect, text, color, text_color, action in buttons:
 
         Button(
-            rect,
-            text,
-            action
+            pr.Rectangle(
+                x,
+                group_panel.y + 4,
+                group_w,
+                32
+            ),
+            group,
+            choose
         )
 
 
+        x += group_w + gap
 
-    # RESET BUTTON
 
-    reset_rect = pr.Rectangle(
-        pr.get_screen_width() - 230,
-        y,
-        200,
-        button_height
+
+    # ==========================
+    # CLEAR PANEL
+    # ==========================
+
+
+    clear_panel = pr.Rectangle(
+
+        sw - clear_w - margin,
+
+        sh - 60,
+
+        clear_w,
+
+        40
     )
+
+
+    panel_ui(clear_panel)
+
+
 
     Button(
-        reset_rect,
-        "RESET MAP",
+
+        pr.Rectangle(
+
+            clear_panel.x + 10,
+
+            clear_panel.y + 4,
+
+            clear_w - 20,
+
+            32
+        ),
+
+        "CLEAR",
+
         reset_map
+
     )
+
+
+
+    # ==========================
+    # MATERIAL PANEL
+    # ==========================
+
+
+    if opened_group is not None:
+
+
+        materials = material_groups[opened_group]
+
+
+        material_w = 115
+        material_h = 34
+
+
+        panel_w = (
+            len(materials) *
+            (material_w + gap)
+            + 20
+        )
+
+
+        material_panel = pr.Rectangle(
+
+            margin,
+
+            sh - 128,
+
+            max(250, panel_w),
+
+            58
+        )
+
+
+        panel_ui(
+            material_panel
+        )
+
+
+        x = material_panel.x + 10
+
+
+        for name, action in materials:
+
+
+            Button(
+
+                pr.Rectangle(
+
+                    x,
+
+                    material_panel.y + 20,
+
+                    material_w,
+
+                    material_h
+                ),
+
+                name,
+
+                action
+            )
+
+
+            x += material_w + gap
