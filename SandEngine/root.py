@@ -1,12 +1,11 @@
 #IMPORTING SASSY LIBS
-from SandEngine.Libs import *
 from SandEngine.Visuals.VisualEngine import visuals_root , get_world , draw_loading_screen
 from SandEngine.LogicsEngine import handle_controls , handle_ui_buttons
 from SandEngine.Debuger import *
 from SandEngine.Physics.PhysicsEngine import update_materials , activate_world
-from SandEngine.DATA.GameConfig import *
 from SandEngine.Audio.AudioEngine import *
 from Assets.Assets_importer import *
+from SandEngine.Additions.api_manager import *
 
 #=====================
 # root layers
@@ -34,6 +33,7 @@ def exit():
 def init_root():
     pr.init_window(w_x, w_y, w_title)
     set_icon()
+    init_apis()
     audio_system_init()
     print_init()
     pr.set_target_fps(w_fps_lock)

@@ -4,6 +4,7 @@ import pyray as pr
 
 # ADDITIONALS
 import colorama as c
+from pypresence import Presence
 
 # IN-BUILT PYTHON LIBS
 import sys , os
