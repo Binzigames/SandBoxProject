@@ -24,6 +24,7 @@ def logics():
 def exit():
     print_message("Exitting game...")
     audio_system_close()
+    terminate_apis()
     pr.close_window()
     sys.exit()
 #=====================
