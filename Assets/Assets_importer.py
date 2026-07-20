@@ -20,4 +20,7 @@ def get_font():
 #=====================
 #VISUALS
 #=====================
-
+def set_icon():
+    icon = pr.load_image("Assets/icon.png")
+    pr.set_window_icon(icon)
+    pr.unload_image(icon)
