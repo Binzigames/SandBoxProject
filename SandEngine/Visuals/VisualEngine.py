@@ -84,12 +84,30 @@ def draw_map():
     if map_texture is None:
         create_map_texture()
 
-    pr.draw_texture(
-        map_texture,
-        0,
-        0,
-        pr.WHITE
-    )
+    if pr.is_window_fullscreen():
+        scale = pr.get_screen_width() / map_texture.width
+
+        pr.draw_texture_pro(
+            map_texture,
+            pr.Rectangle(0, 0, map_texture.width, map_texture.height),
+            pr.Rectangle(
+                0,
+                0,
+                map_texture.width * scale,
+                map_texture.height * scale
+            ),
+            pr.Vector2(0, 0),
+            0.0,
+            pr.WHITE
+        )
+    else:
+        pr.draw_texture(
+            map_texture,
+            0,
+            0,
+            pr.WHITE
+        )
+
 
 #=====================
 # map texture and  optimize stuff
