@@ -102,7 +102,10 @@ def reset_map():
     activate_world(world)
     create_map_texture()
     clear_all_objects()
-
+def open_wiki():
+    webbrowser.open(
+        "https://github.com/Binzigames/Simverra/wiki"
+    )
 #=====================
 #Groops tabs
 #=====================
@@ -144,6 +147,7 @@ def handle_ui_buttons():
 
     margin = 20
     gap = 8
+
 
 
     # ==========================
@@ -206,81 +210,73 @@ def handle_ui_buttons():
     # ==========================
     # CLEAR PANEL
     # ==========================
-
+    clear_w = 80
+    panel_h = 220
+    margin = 20
 
     clear_panel = pr.Rectangle(
-
         sw - clear_w - margin,
-
-        sh - 60,
-
+        sh - panel_h - margin,
         clear_w,
-
-        40
+        panel_h
     )
-
 
     panel_ui(clear_panel)
 
-
-
     Button(
-
         pr.Rectangle(
-
             clear_panel.x + 10,
-
-            clear_panel.y + 4,
-
+            clear_panel.y + 10,
             clear_w - 20,
-
             32
         ),
-
         "CLEAR",
-
         reset_map
-
     )
 
     Button(
-
         pr.Rectangle(
-
             clear_panel.x + 10,
-
-            clear_panel.y - 34,
-
+            clear_panel.y + 50,
             clear_w - 20,
-
             32
         ),
+        "WIKI",
+        open_wiki
+    )
 
-        "SAVE WORLD",
-
+    Button(
+        pr.Rectangle(
+            clear_panel.x + 10,
+            clear_panel.y + 90,
+            clear_w - 20,
+            32
+        ),
+        "SAVE",
         save_world_as
-
     )
 
     Button(
-
         pr.Rectangle(
-
             clear_panel.x + 10,
-
-            clear_panel.y - 74,
-
+            clear_panel.y + 130,
             clear_w - 20,
-
             32
         ),
-
-        "LOAD WORLD",
-
+        "LOAD",
         load_world_from_file
-
     )
 
+    Button(
+        pr.Rectangle(
+            clear_panel.x + 10,
+            clear_panel.y + 170,
+            clear_w - 20,
+            32
+        ),
+        "AUDIO",
+        toggle_audio
+    )
 
 
     # ==========================

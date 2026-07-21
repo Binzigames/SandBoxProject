@@ -14,3 +14,4 @@ import json
 import importlib.util
 import tkinter as tk
 from tkinter import filedialog
+import webbrowser

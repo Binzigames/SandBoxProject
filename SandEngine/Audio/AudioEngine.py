@@ -1,4 +1,4 @@
-#Audio engine created to play easy things in game
+# Audio engine created to play easy things in game
 from SandEngine.Libs import *
 from SandEngine.DATA.GameConfig import *
 
@@ -8,6 +8,11 @@ from SandEngine.DATA.GameConfig import *
 MainTheme = None
 ButtonSound = None
 SandSound = None
+
+# =====================
+# AUDIO STATE
+# =====================
+AudioEnabled = True
 
 
 # =====================
@@ -45,27 +50,57 @@ def audio_system_init():
         SFX_Loudnes
     )
 
-    pr.play_music_stream(
-        MainTheme
-    )
+    if AudioEnabled:
+        pr.play_music_stream(MainTheme)
 
 
 # =====================
 # UPDATE
-# Call every frame
 # =====================
 def audio_system_update():
 
-    if MainTheme:
+    if MainTheme and AudioEnabled:
 
-        pr.update_music_stream(
-            MainTheme
-        )
+        pr.update_music_stream(MainTheme)
 
         if not pr.is_music_stream_playing(MainTheme):
-            pr.play_music_stream(
-                MainTheme
+            pr.play_music_stream(MainTheme)
+
+
+# =====================
+# ENABLE / DISABLE AUDIO
+# =====================
+def set_audio_enabled(state):
+
+    global AudioEnabled
+
+    AudioEnabled = state
+
+    if MainTheme:
+
+        if AudioEnabled:
+            pr.set_music_volume(
+                MainTheme,
+                Music_Loudnes
             )
+
+            pr.play_music_stream(MainTheme)
+
+        else:
+            pr.set_music_volume(
+                MainTheme,
+                0
+            )
+
+
+# =====================
+# TOGGLE AUDIO
+# =====================
+def toggle_audio():
+
+    global AudioEnabled
+
+    set_audio_enabled(not AudioEnabled)
 
 
 # =====================
@@ -73,11 +108,15 @@ def audio_system_update():
 # =====================
 def play_sound(type):
 
+    if not AudioEnabled:
+        return
+
     if type == 1 and ButtonSound:
         pr.play_sound(ButtonSound)
 
     elif type == 2 and SandSound:
         pr.play_sound(SandSound)
+
 
 # =====================
 # CLEANUP
@@ -87,22 +126,13 @@ def audio_system_close():
     global MainTheme, ButtonSound, SandSound
 
     if MainTheme:
-        pr.stop_music_stream(
-            MainTheme
-        )
-
-        pr.unload_music_stream(
-            MainTheme
-        )
+        pr.stop_music_stream(MainTheme)
+        pr.unload_music_stream(MainTheme)
 
     if ButtonSound:
-        pr.unload_sound(
-            ButtonSound
-        )
+        pr.unload_sound(ButtonSound)
 
     if SandSound:
-        pr.unload_sound(
-            SandSound
-        )
+        pr.unload_sound(SandSound)
 
     pr.close_audio_device()
