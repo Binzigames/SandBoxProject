@@ -109,6 +109,7 @@ BOMB = 6
 SOIL = 7
 GAS = 8
 FIRE = 9
+WOOD = 10
 
 
 

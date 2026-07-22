@@ -59,6 +59,24 @@ def M_Wall(color, x, y):
     base = clamp(120 + n)
 
     return pr.Color(base, base, base, 255)
+# =========================
+# WOOD
+# =========================
+def M_Wood( x, y):
+    n = tex_noise(x, y)
+
+    r = clamp(110 + n)
+    g = clamp(70 + n // 2)
+    b = clamp(35 + n // 3)
+
+    if tex_noise(x * 3, y * 3) > 20:
+        r -= 25
+        g -= 15
+        b -= 10
+
+    return pr.Color(r, g, b, 255)
+
+
 
 # =========================
 # GRAVIY

@@ -251,6 +251,9 @@ def update_map_texture():
             elif cell == 9:
                 color = M_fire(x, y)
 
+            elif cell == 10:
+                color = M_Wood(x, y)
+
 
             for py in range(PIXEL_SIZE):
                 for px in range(PIXEL_SIZE):
@@ -293,6 +296,9 @@ def update_cell_texture(x, y):
 
     elif cell == 9:
         color = M_fire(x, y)
+
+    elif cell == 10:
+        color = M_Wood(x, y)
 
 
     for py in range(PIXEL_SIZE):
@@ -353,7 +359,8 @@ def update_dirty_texture():
         elif cell == 9:
             color = M_fire(x , y)
 
-
+        elif cell == 10:
+            color = M_Wood(x, y)
 
         for py in range(PIXEL_SIZE):
 

@@ -246,7 +246,9 @@ def update_gas(world, x, y):
 
     if y - 1 >= 0:
 
-        if world[y-1][x] == AIR:
+        target = world[y-1][x]
+
+        if target == AIR:
 
             move_cell(
                 world,
@@ -255,6 +257,21 @@ def update_gas(world, x, y):
             )
 
             return
+
+
+        elif target == WATER:
+
+            world[y-1][x] = GAS
+            world[y][x] = WATER
+
+            mark_dirty(x, y)
+            mark_dirty(x, y-1)
+
+            add_neighbors(x, y)
+            add_neighbors(x, y-1)
+
+            return
+
 
 
     direction = (
@@ -270,7 +287,9 @@ def update_gas(world, x, y):
 
         if inside(nx, y-1):
 
-            if world[y-1][nx] == AIR:
+            target = world[y-1][nx]
+
+            if target == AIR:
 
                 move_cell(
                     world,
@@ -279,6 +298,21 @@ def update_gas(world, x, y):
                 )
 
                 return
+
+
+            elif target == WATER:
+
+                world[y-1][nx] = GAS
+                world[y][x] = WATER
+
+                mark_dirty(x, y)
+                mark_dirty(nx, y-1)
+
+                add_neighbors(x, y)
+                add_neighbors(nx, y-1)
+
+                return
+
 
 
     FLOW = 4
@@ -292,21 +326,39 @@ def update_gas(world, x, y):
             if not inside(nx, y):
                 break
 
-            if world[y][nx] != AIR:
+
+            target = world[y][nx]
+
+
+            if target == AIR:
+
+                world[y][nx] = GAS
+                world[y][x] = AIR
+
+                mark_dirty(x, y)
+                mark_dirty(nx, y)
+
+                add_neighbors(x, y)
+                add_neighbors(nx, y)
+
+                return
+
+
+            elif target == WATER:
+
+                world[y][nx] = GAS
+                world[y][x] = WATER
+
+                mark_dirty(x, y)
+                mark_dirty(nx, y)
+
+                add_neighbors(x, y)
+                add_neighbors(nx, y)
+
+                return
+
+            else:
                 break
-
-
-            world[y][nx] = GAS
-            world[y][x] = AIR
-
-
-            mark_dirty(x, y)
-            mark_dirty(nx, y)
-
-            add_neighbors(x, y)
-            add_neighbors(nx, y)
-
-            return
 # ===== BOMB =====
 
 
@@ -363,7 +415,6 @@ def update_fire(world, x, y):
     if world[y][x] != FIRE:
         return
 
-    # життя вогню
     fire_life[(x, y)] = fire_life.get((x, y), 12) - 1
 
     if fire_life[(x, y)] <= 0:
@@ -405,6 +456,32 @@ def update_fire(world, x, y):
                 if random.random() < 0.03:
                     world[ny][nx] = FIRE
                     fire_life[(nx, ny)] = random.randint(5, 10)
+
+            elif tile == WOOD:
+                if random.random() < 0.08:
+
+                    world[ny][nx] = FIRE
+                    fire_life[(nx, ny)] = random.randint(8, 15)
+
+                    mark_dirty(nx, ny)
+                    activate(nx, ny)
+
+                    for gy in (-1, 0, 1):
+                        for gx in (-1, 0, 1):
+
+                            gas_x = nx + gx
+                            gas_y = ny + gy
+
+                            if inside(gas_x, gas_y):
+
+                                if world[gas_y][gas_x] == AIR:
+
+                                    if random.random() < 0.25:
+                                        world[gas_y][gas_x] = GAS
+
+                                        mark_dirty(gas_x, gas_y)
+                                        activate(gas_x, gas_y)
+
 
 # ===== MAIN UPDATE =====
 def update_materials(world):
