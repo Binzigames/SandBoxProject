@@ -105,7 +105,12 @@ SAND = 2
 WATER = 3
 STONE = 4
 GRAVIY = 5
+BOMB = 6
 
+
+#options
+explosions = []
+EXPLOSION_RADIUS = 20
 # DIRTY PIXELS
 
 dirty_cells = set()

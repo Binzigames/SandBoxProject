@@ -61,6 +61,28 @@ def M_graviy(color, x, y):
         100 + nois // 2,
         255
     )
+
+# =========================
+# BOMB
+# =========================
+def M_bomb(color, x, y):
+    nois = tex_noise(x, y)
+
+    if (x % 4 == 1 and y % 4 == 1):
+        return pr.Color(
+            255,
+            40,
+            40,
+            255
+        )
+
+
+    return pr.Color(
+        70 + nois,
+        70 + nois,
+        80 + nois,
+        255
+    )
 # =========================
 # BACKGROUND
 # =========================

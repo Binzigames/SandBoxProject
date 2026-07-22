@@ -233,6 +233,51 @@ def update_water(world,x,y):
 
             return
 
+# ===== BOMB =====
+
+
+def explode(world, x, y):
+    for dy in range(-EXPLOSION_RADIUS, EXPLOSION_RADIUS + 1):
+        for dx in range(-EXPLOSION_RADIUS, EXPLOSION_RADIUS + 1):
+
+            nx = x + dx
+            ny = y + dy
+
+            if not inside(nx, ny):
+                continue
+
+            if dx * dx + dy * dy > EXPLOSION_RADIUS ** 2:
+                continue
+
+            if world[ny][nx] == BOMB and (nx != x or ny != y):
+                explode(world, nx, ny)
+
+            world[ny][nx] = AIR
+
+            mark_dirty(nx, ny)
+            add_neighbors(nx, ny)
+        explosions.append({
+            "x": x * PIXEL_SIZE + PIXEL_SIZE // 2,
+            "y": y * PIXEL_SIZE + PIXEL_SIZE // 2,
+            "radius": 2,
+            "life": 0.5,
+            "max_radius": EXPLOSION_RADIUS * PIXEL_SIZE * 2
+        })
+
+def update_bomb(world, x, y):
+
+    if y + 1 >= MAP_H:
+        explode(world, x, y)
+        return
+
+    below = world[y + 1][x]
+
+    if below == AIR:
+        move_cell(world, x, y, x, y + 1)
+        return
+
+    if below != BOMB:
+        explode(world, x, y)
 
 # ===== MAIN UPDATE =====
 def update_materials(world):
@@ -261,6 +306,8 @@ def update_materials(world):
         elif tile == WATER:
 
             update_water(world,x,y)
+        elif tile == BOMB:
+            update_bomb(world, x, y)
 
 
         count += 1
@@ -280,5 +327,5 @@ def activate_world(world):
 
     for y in range(MAP_H):
         for x in range(MAP_W):
-            if world[y][x] in (SAND, WATER, GRAVIY):
+            if world[y][x] in (SAND, WATER, GRAVIY, BOMB):
                 activate(x, y)

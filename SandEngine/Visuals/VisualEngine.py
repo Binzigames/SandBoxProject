@@ -239,6 +239,9 @@ def update_map_texture():
             elif cell == 5:
                 color = M_graviy(color, x, y)
 
+            elif cell == 6 :
+                color = M_bomb(color, x, y)
+
 
             for py in range(PIXEL_SIZE):
                 for px in range(PIXEL_SIZE):
@@ -269,6 +272,8 @@ def update_cell_texture(x, y):
 
     elif cell == 5:
         color = M_graviy(pr.GRAY, x, y)
+    elif cell == 6:
+        color = M_bomb(color, x, y)
 
 
     for py in range(PIXEL_SIZE):
@@ -316,6 +321,8 @@ def update_dirty_texture():
 
         elif cell == 5:
             color = M_graviy(pr.GRAY, x, y)
+        elif cell == 6:
+            color = M_bomb(color, x, y)
 
 
 
@@ -1086,7 +1093,125 @@ def draw_loading_screen():
         UI_C_ACCENT
      )
 
+#=====================
+# explosive
+#=====================
 
+def draw_explosions():
+
+    dt = pr.get_frame_time()
+
+    for e in explosions[:]:
+
+        e["life"] -= dt
+
+        progress = 1 - (e["life"] / e.get("max_life", 0.35))
+
+        radius = max(
+            1,
+            int(8 + progress * e.get("max_radius", 80))
+        )
+
+        if progress < 0.15:
+
+            pr.draw_rectangle(
+                int(e["x"] - 8),
+                int(e["y"] - 8),
+                16,
+                16,
+                pr.WHITE
+            )
+
+
+
+        pr.draw_circle(
+            int(e["x"]),
+            int(e["y"]),
+            radius,
+            pr.Color(
+                255,
+                80,
+                10,
+                max(0, min(255, int(180 * (1 - progress))))
+            )
+        )
+
+
+
+
+        core = max(
+            3,
+            radius // 3
+        )
+
+        pr.draw_circle(
+            int(e["x"]),
+            int(e["y"]),
+            core,
+            pr.Color(
+                255,
+                230,
+                80,
+                255
+            )
+        )
+
+
+
+
+        for i in range(8):
+
+            angle = i * 0.785
+
+            px = int(
+                e["x"] +
+                math.cos(angle) * radius
+            )
+
+            py = int(
+                e["y"] +
+                math.sin(angle) * radius
+            )
+
+
+            pr.draw_rectangle(
+                px,
+                py,
+                random.randint(3,6),
+                random.randint(3,6),
+                random.choice([
+                    pr.ORANGE,
+                    pr.RED,
+                    pr.YELLOW
+                ])
+            )
+
+
+
+
+        for i in range(5):
+
+            sx = e["x"] + random.randint(
+                -radius*2,
+                radius*2
+            )
+
+            sy = e["y"] + random.randint(
+                -radius*2,
+                radius*2
+            )
+
+            pr.draw_rectangle(
+                int(sx),
+                int(sy),
+                2,
+                2,
+                pr.YELLOW
+            )
+
+
+        if e["life"] <= 0:
+            explosions.remove(e)
 
 #=====================
 # root
@@ -1117,6 +1242,8 @@ def visuals_root():
     draw_map()
 
     draw_objects()
+
+    draw_explosions()
 
     draw_ui()
 

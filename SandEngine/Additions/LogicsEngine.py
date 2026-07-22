@@ -94,6 +94,9 @@ def select_gravity():
     global Curent_material
     Curent_material = 5
 
+def select_bomb():
+    global Curent_material
+    Curent_material = 6
 
 def reset_map():
     global world
@@ -123,6 +126,7 @@ material_groups = {
 
     "Special": [
         ("Gravity", select_gravity),
+        ("Bomb", select_bomb),
     ],
     "Mods": [
 
