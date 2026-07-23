@@ -176,3 +176,116 @@ def M_fire( x, y):
     b = max(0, 30 + nois // 8)
 
     return pr.Color(r, g, b, 255)
+
+# =========================
+# BlackHole
+# =========================
+def M_hole(x, y):
+
+    t = pr.get_time()
+
+
+    u = x / 16.0
+    v = y / 16.0
+
+
+
+    space = (math.sin(u * 0.8) + math.cos(v * 0.7)) * 0.5
+
+    bg_r = int(5 + 10 * space)
+    bg_g = int(8 + 15 * space)
+    bg_b = int(25 + 50 * space)
+
+
+
+    holes = [
+        (0.25, 0.30, 0.10),
+        (0.70, 0.25, 0.07),
+        (0.45, 0.75, 0.13),
+        (0.85, 0.70, 0.08),
+        (0.15, 0.80, 0.06),
+    ]
+
+    total_glow = 0
+    total_dark = 0
+
+    for hx, hy, size in holes:
+
+        dx = u - hx
+        dy = v - hy
+
+        d = math.sqrt(dx*dx + dy*dy)
+
+        angle = math.atan2(dy, dx)
+
+        noise = tex_noise(x + int(hx*100), y + int(hy*100)) / 255.0
+
+
+
+        ring = math.sin(
+            angle * 12 -
+            t * 6 +
+            noise * 8
+        )
+
+
+        glow = math.exp(
+            -((d - size*2.2) * 30)**2
+        )
+
+        glow *= 0.6 + ring * 0.4
+
+
+
+        hole = 1.0 - min(
+            1.0,
+            d / size
+        )
+
+        hole = hole ** 4
+
+
+        total_glow += glow
+        total_dark += hole
+
+
+
+
+    star_noise = tex_noise(x*3, y*3)
+
+    if star_noise > 245:
+        bg_r += 80
+        bg_g += 80
+        bg_b += 120
+
+
+
+
+    r = bg_r + int(total_glow * 180)
+    g = bg_g + int(total_glow * 70)
+    b = bg_b + int(total_glow * 230)
+
+
+    dark = int(total_dark * 255)
+
+    r -= dark
+    g -= dark
+    b -= dark
+
+
+
+    flick = int(
+        (math.sin(t*20 + x*y) + 1) * 4
+    )
+
+    r += flick
+    g += flick//2
+    b += flick
+
+
+    return pr.Color(
+        int(max(0,min(255,r))),
+        int(max(0,min(255,g))),
+        int(max(0,min(255,b))),
+        255
+    )

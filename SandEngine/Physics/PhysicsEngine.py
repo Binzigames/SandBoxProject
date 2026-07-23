@@ -482,7 +482,62 @@ def update_fire(world, x, y):
                                         mark_dirty(gas_x, gas_y)
                                         activate(gas_x, gas_y)
 
+# ===== BLACK HOLE =====
 
+def update_black_hole(world, x, y):
+
+    if not inside(x, y):
+        return
+
+    if world[y][x] != BLACK_HOLE:
+        return
+
+    RADIUS = 4
+
+    for dy in range(-RADIUS, RADIUS + 1):
+        for dx in range(-RADIUS, RADIUS + 1):
+
+            nx = x + dx
+            ny = y + dy
+
+            if not inside(nx, ny):
+                continue
+
+            if nx == x and ny == y:
+                continue
+
+            tile = world[ny][nx]
+
+            if tile in (AIR, BLACK_HOLE):
+                continue
+
+
+            if abs(dx) <= 1 and abs(dy) <= 1:
+
+                world[ny][nx] = AIR
+
+                mark_dirty(nx, ny)
+                add_neighbors(nx, ny)
+
+                continue
+
+            sx = 0 if dx == 0 else (-1 if dx > 0 else 1)
+            sy = 0 if dy == 0 else (-1 if dy > 0 else 1)
+
+            tx = nx + sx
+            ty = ny + sy
+
+            if inside(tx, ty):
+
+                if world[ty][tx] == AIR:
+
+                    move_cell(
+                        world,
+                        nx,
+                        ny,
+                        tx,
+                        ty
+                    )
 # ===== MAIN UPDATE =====
 def update_materials(world):
     global active_cells
@@ -513,6 +568,8 @@ def update_materials(world):
             update_gas(world, x, y)
         elif tile == FIRE:
             update_fire(world, x, y)
+        elif tile == BLACK_HOLE:
+            update_black_hole(world, x, y)
 
 
         count += 1
@@ -532,5 +589,5 @@ def activate_world(world):
 
     for y in range(MAP_H):
         for x in range(MAP_W):
-            if world[y][x] in (SAND, WATER, GRAVIY, BOMB , SOIL , GAS , FIRE):
+            if world[y][x] in (SAND, WATER, GRAVIY, BOMB , SOIL , GAS , FIRE , BLACK_HOLE):
                 activate(x, y)

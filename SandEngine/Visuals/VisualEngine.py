@@ -254,6 +254,9 @@ def update_map_texture():
             elif cell == 10:
                 color = M_Wood(x, y)
 
+            elif cell == 11:
+                color = M_hole(x, y)
+
 
             for py in range(PIXEL_SIZE):
                 for px in range(PIXEL_SIZE):
@@ -299,6 +302,9 @@ def update_cell_texture(x, y):
 
     elif cell == 10:
         color = M_Wood(x, y)
+
+    elif cell == 11:
+        color = M_hole(x, y)
 
 
     for py in range(PIXEL_SIZE):
@@ -361,6 +367,9 @@ def update_dirty_texture():
 
         elif cell == 10:
             color = M_Wood(x, y)
+
+        elif cell == 11:
+            color = M_hole(x, y)
 
         for py in range(PIXEL_SIZE):
 

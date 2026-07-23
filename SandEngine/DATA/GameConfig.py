@@ -111,6 +111,7 @@ SOIL = 7
 GAS = 8
 FIRE = 9
 WOOD = 10
+BLACK_HOLE = 11
 
 
 

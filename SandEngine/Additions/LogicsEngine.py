@@ -105,6 +105,10 @@ def select_wood():
     global Curent_material
     Curent_material = 10
 
+def select_hole():
+    global Curent_material
+    Curent_material = 11
+
 def reset_map():
     global world
 
@@ -126,18 +130,19 @@ material_groups = {
         ("Soil", select_grass),
         ("Sand", select_sand),
         ("Water", select_water),
+        ("Fire", select_fire),
+        ("Bomb", select_bomb),
     ],
 
-    "Not Physical": [
+    "Walls": [
         ("Wall", select_wall),
         ("Wood", select_wood),
     ],
 
     "Special": [
-        ("Gravity", select_gravity),
-        ("Bomb", select_bomb),
-        ("Fire", select_fire),
-        ("GAS", select_gas),
+        ("Graviy", select_gravity),
+        ("Gas", select_gas),
+        ("Black Hole", select_hole),
     ],
     "Mods": [
 
